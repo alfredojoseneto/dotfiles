@@ -1,3 +1,7 @@
+# Gerar o arquivo padrão do Tmux
+#### tmux show -g | sed -e 's/^/set -g /' -e 's/prefix2 none/prefix2 C-b/g' > ~/.tmux.conf
+
+
 # Set that stupid Esc-Wait off, so VI works again
 set -sg escape-time 0
 
