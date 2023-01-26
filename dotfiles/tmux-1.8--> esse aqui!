@@ -9,7 +9,12 @@
 #################################################################################
 # Daqui para baixo é só complemento para tirar alguma dúvida
 #################################################################################
-
+setw -g allow-rename off
+set -g automatic-rename off
+set -g base-index 1
+set -g escape-time 0
+set -g default-terminal "screen-256color"
+#set -g default-terminal "terminator"
 
 # Set that stupid Esc-Wait off, so VI works again
 set -sg escape-time 0
