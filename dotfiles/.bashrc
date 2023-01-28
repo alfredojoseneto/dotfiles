@@ -188,6 +188,7 @@ PS1="\n${FG_BLUE}$STARTLINE" # begin arrow to prompt
 PS1+="${FG_MAGENTA}" # begin USERNAME container
 # PS1+="${BG_MAGENTA}${FG_CYAN}${FMT_BOLD}  " # print OS icon
 PS1+="${BG_MAGENTA}${FG_RED}${FMT_BOLD}  " # print OS icon
+# PS1+="${BG_RED}${FG_WHITE}${FMT_BOLD}  " # print OS icon  --->>> apply this for root
 PS1+="${FG_WHITE} \u" # print username
 PS1+=" @ "
 PS1+="  \h"
