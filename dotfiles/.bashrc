@@ -144,10 +144,10 @@ parse_git_branch() {
 
 # export PS1='\[\e[1;36m\]\342\224\214\342\224\200\[\e[1;36m\][\[\e[1;36m\]\u\[\e[1;33m\]@\[\e[1;37m\]\h\[\e[1;36m\]]\[\e[1;36m\]\342\224\200\[\e[1;36m\][\[\e[1;37m\]\w\[\e[1;36m\]]\n\[\e[1;36m\]\342\224\224\342\224\200\342\224\200\342\225\274\[\e[1;32m\] \$ \[\e[0m\]'
 # export PS1="[\h@\u]-[\w\$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/')]\\$\[$(tput sgr0)\]"
-#
-#
-#
-# =============================================================================
+ 
+ 
+ 
+#==============================================================================
 #-------------------- PS1 BASH ------------------------------------------------
 #==============================================================================
 # # prompt
@@ -192,8 +192,8 @@ PS1+="${FG_WHITE} \u" # print username
 PS1+=" @ "
 PS1+="  \h"
 # PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
-PS1+="${FMT_BOLD} ${FG_MAGENTA}${BG_BLUE}${FMT_UNBOLD} " # end USERNAME container / begin DIRECTORY container
-# PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
+# PS1+="${FMT_BOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
+PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
 PS1+="${FG_GREY}\w " # print directory
 # PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
 PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
