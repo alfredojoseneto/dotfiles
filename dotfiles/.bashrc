@@ -3,8 +3,7 @@
 # for examples
 
 # If not running interactively, don't do anything
-case $- in
-    *i*) ;;
+case $- in *i*) ;;
       *) return;;
 esac
 
@@ -193,7 +192,8 @@ PS1+="${FG_WHITE} \u" # print username
 PS1+=" @ "
 PS1+="  \h"
 # PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
-PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
+PS1+="${FMT_BOLD} ${FG_MAGENTA}${BG_BLUE}${FMT_UNBOLD} " # end USERNAME container / begin DIRECTORY container
+# PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
 PS1+="${FG_GREY}\w " # print directory
 # PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
 PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
