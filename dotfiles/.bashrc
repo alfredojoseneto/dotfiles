@@ -3,7 +3,8 @@
 # for examples
 
 # If not running interactively, don't do anything
-case $- in *i*) ;;
+case $- in
+    *i*) ;;
       *) return;;
 esac
 
@@ -75,7 +76,6 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    alias lsbw='ls --color=never'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
@@ -113,18 +113,9 @@ if ! shopt -oq posix; then
 fi
 
 
-# Tmux as default when open a new shell
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach -t default || tmux new -s default
-fi
-
 # export the PATH
 export PATH="$PATH:$HOME/.local/opt"
 
-
-parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
-}
 
 
 # STARTCOLOR='\[\e[1;36m\]';
