@@ -91,7 +91,7 @@ fi
 #alias ll='ls -l'
 #alias la='ls -A'
 #alias l='ls -CF'
-
+alias lsbw='ls -lha --color=never'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -117,6 +117,12 @@ fi
 export PATH="$PATH:$HOME/.local/opt"
 
 
+# -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
+if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
+  # Adapted from https://unix.stackexchange.com/a/176885/347104
+  # Create session 'main' or attach to 'main' if already exists.
+  tmux new-session -A -s main
+fi
 
 # STARTCOLOR='\[\e[1;36m\]';
 # ORANGECOLOR='\[\e[1;33m\]';
