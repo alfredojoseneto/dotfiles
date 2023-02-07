@@ -1,0 +1,23 @@
+! STEP-1: First of all, install:
+! $ sudo apt install x11-xserver-utils xkeycaps
+! 
+! STEP-2: After that, create the .Xmodmap file
+! $ touch ~/.Xmodmap
+!
+! STEP-3: Put the code in the session below in the ".Xmodmap" file in home dir.
+!
+! STEP-4: run the code below to update the modemap
+! $ xmodmap ~/.Xmodmap
+!
+!==============================================================================
+!-------------------- CODE TO PUT IN .Xmodmap file ----------------------------
+!==============================================================================
+! Swap Caps_Lock and Control_L
+!
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+
