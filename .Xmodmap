@@ -1,0 +1,38 @@
+! STEP-1: First of all, install:
+! $ sudo apt install x11-xserver-utils xkeycaps
+! 
+! STEP-2: After that, create the .Xmodmap file
+! $ touch ~/.Xmodmap
+!
+! STEP-3: Put the code in the session below in the ".Xmodmap" file in home dir.
+!
+! STEP-4: Run the code below to update the modemap
+! $ xmodmap ~/.Xmodmap
+!
+! STEP-5: Create a script to run on loading
+! $ touch ~/remapkeys.sh
+! $ chmod u+x remapkeys.sh
+! - add this two lines of code
+! #!/usr/bin/bash
+! xmodmap $HOME/.Xmodmap
+! - after that, move the file into autorun folder
+! - the KDE autorun folder is in
+!   - $HOME/.kde/autorun or
+!   - $HOME/.config/autostart
+! - the XSever is in
+!   - $HOME/.config/autostart
+!
+! For more information the source:
+!https://en.jveweb.net/archives/2010/11/making-better-use-of-the-caps-lock-key-in-linux.html#:~:text=ESC%20and%20CapsLock-,Change%20or%20swap%20the%20Caps%20Lock%20key%20functionality%20in%20KDE,the%20CapsLock%20key%20behavior%20section.
+!==============================================================================
+!-------------------- CODE TO PUT IN .Xmodmap file ----------------------------
+!==============================================================================
+! Swap Caps_Lock and Control_L
+!
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+
