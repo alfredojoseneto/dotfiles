@@ -113,8 +113,6 @@ if ! shopt -oq posix; then
 fi
 
 
-# export the PATH
-export PATH="$PATH:$HOME/.local/opt"
 
 
 # -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
@@ -191,7 +189,8 @@ PS1+="  \h"
 # PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
 # PS1+="${FMT_BOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
 PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
-PS1+="${FG_GREY}\w " # print directory
+# PS1+="${FG_GREY}\w " # print directory
+PS1+="${FG_GREY}\W " # print directory
 # PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
 PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
 PS1+="${FG_BLACK}"
