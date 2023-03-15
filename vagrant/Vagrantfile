@@ -1,0 +1,31 @@
+machines = {
+  # "ubuntu"   => {"memory" => "1024", "cpu" => "2", "ip" => "30", "image" => "ubuntu/focal64"},
+  # "debian" => {"memory" => "512",  "cpu" => "2", "ip" => "31", "image" => "debian/bullseye64"},
+  "debian" => {"memory" => "1024", "cpu" => "2", "ip" => "30", "image" => "debian/bullseye64"},
+  "ubuntu" => {"memory" => "1024", "cpu" => "2", "ip" => "31", "image" => "ubuntu/focal64"},
+}
+Vagrant.configure("2") do |config|
+  
+  machines.each do |name, conf|
+    config.ssh.forward_agent = true
+    config.ssh.forward_x11 = true
+    config.vm.define "#{name}" do |lab|
+    # lab.disksize.size = "20GB"
+    # lab.vm.disk :disk, name: 'disk01', size: "100MB"
+    # lab.vm.disk :disk, name: 'disk02', size: "100MB"
+      lab.vm.box = "#{conf["image"]}"
+      lab.vm.hostname = "#{name}"
+      # lab.vm.network "public_network", bridge: "wlp2s0", ip: "192.168.15.#{conf["ip"]}"
+      lab.vm.network "private_network", ip: "10.10.10.#{conf["ip"]}"
+      if name == "debian"  # configurando acesso ao nginx
+        lab.vm.network "forwarded_port", guest: 80, host: 9000, protocol: "tcp", id: 'nginx-tcp'
+        lab.vm.network "forwarded_port", guest: 80, host: 9000, protocol: "udp", id: 'nginx-udp'
+      end
+      lab.vm.provider "virtualbox" do |vb|
+        vb.name = "#{name}"
+        vb.cpus = conf["cpu"]
+        vb.memory = conf["memory"]
+      end
+    end
+  end
+end
