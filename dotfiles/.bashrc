@@ -64,13 +64,10 @@ fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
+# case "$TERM" in
+#   xterm*|rxvt*)
+#     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1";;
+# esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -78,7 +75,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
-
     #alias grep='grep --color=auto'
     #alias fgrep='fgrep --color=auto'
     #alias egrep='egrep --color=auto'
@@ -113,6 +109,8 @@ if ! shopt -oq posix; then
 fi
 
 
+# selecting the default editor
+export EDITOR=lvim
 
 
 # -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
@@ -122,30 +120,11 @@ if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
   tmux new-session -A -s main
 fi
 
-# STARTCOLOR='\[\e[1;36m\]';
-# ORANGECOLOR='\[\e[1;33m\]';
-# PURPLECOLOR='\[\e[1;35m\]'
-# ENDCOLOR="\[\e[0m\]"
-# STARTLINE="\342\224\214\342\224\200"
-# ENDLINE="\342\224\224\342\224\200\342\224\200\342\225\274"
-# export PS1="$STARTCOLOR$STARTLINE \u$ORANGECOLOR@$ENDCOLOR$STARTCOLOR\h[$ORANGECOLOR\w$ENDCOLOR$PURPLECOLOR$(parse_git_branch)$ENDCOLOR]\n$ENDLINE$ENDCOLOR$STARTCOLOR \$$ENDCOLOR "
-
-# export PS1='\[\e[1;36m\]\342\224\214\342\224\200\[\e[1;36m\][\[\e[1;36m\]\u\[\e[1;33m\]@\[\e[1;37m\]\h\[\e[1;36m\]]\[\e[1;36m\]\342\224\200\[\e[1;36m\][\[\e[1;37m\]\w\[\e[1;36m\]]\n\[\e[1;36m\]\342\224\224\342\224\200\342\224\200\342\225\274\[\e[1;32m\] \$ \[\e[0m\]'
-
-# -------------------- display git branch -------------------------------------
-
-# export PS1="\e[0;31m[\u@\h \W] \$ \e[m "
-# export PS1="$(inicio_cor)[\u@\h \W] \$ \e[m"
-
-# export PS1='\[\e[1;36m\]\342\224\214\342\224\200\[\e[1;36m\][\[\e[1;36m\]\u\[\e[1;33m\]@\[\e[1;37m\]\h\[\e[1;36m\]]\[\e[1;36m\]\342\224\200\[\e[1;36m\][\[\e[1;37m\]\w\[\e[1;36m\]]\n\[\e[1;36m\]\342\224\224\342\224\200\342\224\200\342\225\274\[\e[1;32m\] \$ \[\e[0m\]'
-# export PS1="[\h@\u]-[\w\$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/')]\\$\[$(tput sgr0)\]"
- 
- 
- 
 #==============================================================================
 #-------------------- PS1 BASH ------------------------------------------------
 #==============================================================================
-# # prompt
+
+# Colors
 FMT_BOLD="\[\e[1m\]"
 FMT_DIM="\[\e[2m\]"
 FMT_RESET="\[\e[0m\]"
@@ -154,10 +133,14 @@ FMT_UNDIM="\[\e[22m\]"
 FG_BLACK="\[\e[30m\]"
 FG_BLUE="\[\e[34m\]"
 FG_CYAN="\[\e[36m\]"
+FG_LIGHT_CYAN="\[\e[96m\]"
 FG_GREEN="\[\e[32m\]"
+FG_LIGHT_GREEN="\[\e[92m\]"
 FG_GREY="\[\e[37m\]"
 FG_MAGENTA="\[\e[35m\]"
 FG_RED="\[\e[31m\]"
+FG_YELLOW="\[\e[33m\]"
+FG_LIGHT_YELLOW="\[\e[93m\]"
 FG_WHITE="\[\e[97m\]"
 BG_BLACK="\[\e[40m\]"
 BG_BLUE="\[\e[44m\]"
@@ -173,39 +156,21 @@ parse_git_bg() {
 }
 
 parse_git_fg() {
-	[[ $(git status -s 2> /dev/null) ]] && echo -e "\e[33m" || echo -e "\e[32m"
+	[[ $(git status -s 2> /dev/null) ]] && echo -e "\e[93m" || echo -e "\e[92m"
 }
 
-# PS1="\n${FG_BLUE}╭─" # begin arrow to prompt
-PS1="\n${FG_BLUE}$STARTLINE" # begin arrow to prompt
-# PS1+="${FG_MAGENTA}" # begin USERNAME container
-PS1+="${FG_MAGENTA}" # begin USERNAME container
-# PS1+="${BG_MAGENTA}${FG_CYAN}${FMT_BOLD}  " # print OS icon
-PS1+="${BG_MAGENTA}${FG_RED}${FMT_BOLD}  " # print OS icon
-# PS1+="${BG_RED}${FG_WHITE}${FMT_BOLD}  " # print OS icon  --->>> apply this for root
-PS1+="${FG_WHITE} \u" # print username
-PS1+=" @ "
-PS1+="  \h"
-# PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
-# PS1+="${FMT_BOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
-PS1+="${FMT_UNBOLD} ${FG_MAGENTA}${BG_BLUE} " # end USERNAME container / begin DIRECTORY container
-# PS1+="${FG_GREY}\w " # print directory
-PS1+="${FG_GREY}\W " # print directory
-# PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
-PS1+="${FG_BLUE}${BG_CYAN} " # end DIRECTORY container / begin FILES container
-PS1+="${FG_BLACK}"
-PS1+=" \$(find . -mindepth 1 -maxdepth 1 -type d | wc -l) " # print number of folders
-PS1+=" \$(find . -mindepth 1 -maxdepth 1 -type f | wc -l) " # print number of files
-PS1+=" \$(find . -mindepth 1 -maxdepth 1 -type l | wc -l) " # print number of symlinks
-PS1+="${FMT_RESET}${FG_CYAN}"
+PS1="\n${FG_CYAN}$STARTLINE${FMT_RESET}" # begin arrow to prompt
+PS1+="[${FMT_BOLD}${FG_CYAN}\u${FMT_RESET}${FMT_BOLD}${FG_YELLOW}@${FMT_RESET}${FMT_BOLD}${FG_WHITE}\h${FMT_RESET}]-[${FMT_BOLD}${FG_CYAN}\W${FMT_RESET}]"
+PS1+="${FMT_RESET}"
 PS1+="\$(git branch 2> /dev/null | grep '^*' | colrm 1 2 | xargs -I BRANCH echo -n \"" # check if git branch exists
-# PS1+="\$(parse_git_bg) " # end FILES container / begin BRANCH container
-PS1+="\$(parse_git_bg) " # end FILES container / begin BRANCH container
-PS1+="${FG_BLACK} BRANCH " # print current git branch
-# PS1+="${FMT_RESET}\$(parse_git_fg)\")\n" # end last container (either FILES or BRANCH)
-PS1+="${FMT_RESET}\$(parse_git_fg)\")\n" # end last container (either FILES or BRANCH)
-# PS1+="${FG_BLUE}╰ " # end arrow to prompt
-PS1+="${FG_BLUE}$ENDLINE " # end arrow to prompt
+PS1+="-[${FMT_BOLD}\$(parse_git_fg)BRANCH${FMT_RESET}]" # print current git branch
+PS1+="${FMT_RESET}\$(parse_git_fg)\")${FMT_RESET}\n" # end last container (either FILES or BRANCH)
+PS1+="${FG_CYAN}$ENDLINE " # end arrow to prompt
 PS1+="${FG_CYAN}\\$ " # print prompt
 PS1+="${FMT_RESET}"
 export PS1
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
