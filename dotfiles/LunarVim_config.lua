@@ -9,7 +9,8 @@
 lvim.plugins = {
   { "karoliskoncevicius/vim-sendtowindow" },
   { "jamestthompson3/nvim-remote-containers" },
-  -- { "lukas-reineke/virt-column.nvim" }
+  { "tpope/vim-surround" },                                  -- allow chance the surround of a word
+  { "junegunn/vim-easy-align" },                             -- plugin to aling by character -- { "lukas-reineke/virt-column.nvim" }
 }
 
 
