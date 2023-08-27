@@ -147,7 +147,7 @@ set wildmode=list:longest
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
 " Copy to the clipboard
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 " The encoding should be utf-8 to activate the font icons
 set encoding=utf-8
@@ -163,6 +163,7 @@ call plug#begin()
     Plug 'vim-airline/vim-airline-themes'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-commentary'
+    Plug 'dracula/vim', {'as':'dracula'}
 call plug#end()
 
 "-------------------------------------------------------------------------------
@@ -170,13 +171,14 @@ call plug#end()
 "===============================================================================
 "-------------------- COLOR_SCHEME ---------------------------------------------
 "===============================================================================
-let g:sonokai_style = 'andromeda'
-let g:sonokai_enable_italic = 1
-let g:sonokai_disable_italic_comment = 0
-let g:sonokai_diagnostic_line_highlight = 1
-let g:sonokai_current_word = 'bold'
-let g:sonokai_transparent_background = 0
-colorscheme sonokai
+" let g:sonokai_style = 'andromeda'
+" let g:sonokai_enable_italic = 1
+" let g:sonokai_disable_italic_comment = 0
+" let g:sonokai_diagnostic_line_highlight = 1
+" let g:sonokai_current_word = 'bold'
+" let g:sonokai_transparent_background = 0
+" colorscheme sonokai
+colorscheme dracula
 
 if exists('+termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -189,7 +191,7 @@ endif
 "===============================================================================
 
 " Set the backslash as the leader key
-let mapleader = '\'
+let mapleader = " "
 
 " Type jk to exit insert mode quickly
 inoremap jk <Esc>
