@@ -1,4 +1,5 @@
-ARG BASE_IMAGE=debian:bookworm-slim
+# ARG BASE_IMAGE=debian:bookworm-slim
+ARG BASE_IMAGE=debian:bookworm
 
 FROM ${BASE_IMAGE}
 
@@ -18,8 +19,8 @@ RUN apt update && \
     # nodejs \
     npm \
     pip \
-    python3 \
-    python3-venv \
+    # python3 \
+    # python3-venv \
     sudo \
     wget
 
