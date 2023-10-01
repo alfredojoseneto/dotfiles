@@ -1,5 +1,5 @@
 return {
-	"https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
+	"HiPhish/rainbow-delimiters.nvim",
 	config = function()
 		-- This module contains a number of default definitions
 		local rainbow_delimiters = require("rainbow-delimiters")
@@ -14,13 +14,13 @@ return {
 				lua = "rainbow-blocks",
 			},
 			highlight = {
-				"RainbowDelimiterRed",
-				"RainbowDelimiterYellow",
-				"RainbowDelimiterBlue",
-				"RainbowDelimiterOrange",
-				"RainbowDelimiterGreen",
 				"RainbowDelimiterViolet",
 				"RainbowDelimiterCyan",
+				"RainbowDelimiterYellow",
+				"RainbowDelimiterBlue",
+				"RainbowDelimiterGreen",
+				"RainbowDelimiterOrange",
+				"RainbowDelimiterRed",
 			},
 		}
 	end,
