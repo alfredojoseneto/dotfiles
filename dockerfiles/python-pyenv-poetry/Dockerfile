@@ -65,8 +65,10 @@ ENV PATH=${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:$PATH
 RUN pyenv install 3.12.0 && \
     pyenv global 3.12.0
 
-# Installing poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+# Installing poetry and configuring it
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+poetry config virtualenvs.in-project true && \
+poetry config virtualenvs.prefer-active-python true
 
 WORKDIR /home/${DEFAULT_USER}/workdir
 
