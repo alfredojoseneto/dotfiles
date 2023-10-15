@@ -1,0 +1,8 @@
+\!/=
+/instance/org.knime.python2/defaultPythonOption=python3
+/instance/org.knime.python2/python2CondaEnvironmentDirectoryPath=no_conda_environment_selected
+/instance/org.knime.python2/python2Path=python
+/instance/org.knime.python2/python3CondaEnvironmentDirectoryPath=no_conda_environment_selected
+/instance/org.knime.python2/python3Path=/usr/bin/python3
+/instance/org.knime.python2/pythonEnvironmentType=manual
+file_export_version=3.0
