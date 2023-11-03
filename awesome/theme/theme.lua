@@ -5,13 +5,16 @@
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
+local gears = require("gears")
 
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
+-- print(themes_path)
+-- local themes_path = gears.filesystem.get_configuration_dir() .. "theme/"
 
 local theme = {}
 
-theme.font = "sans 8"
+theme.font = "JetBrainsMono Nerd Font Regular 9"
 
 theme.bg_normal = "#222222"
 theme.bg_focus = "#535d6c"
@@ -24,10 +27,11 @@ theme.fg_focus = "#ffffff"
 theme.fg_urgent = "#ffffff"
 theme.fg_minimize = "#ffffff"
 
-theme.useless_gap = dpi(5)
+theme.useless_gap = dpi(3)
 theme.border_width = dpi(1)
 theme.border_normal = "#000000"
-theme.border_focus = "#535d6c"
+-- theme.border_focus = "#535d6c"
+theme.border_focus = "#6272a4"
 theme.border_marked = "#91231c"
 
 -- There are other variable sets
@@ -93,7 +97,8 @@ theme.titlebar_maximized_button_focus_inactive = themes_path .. "default/titleba
 theme.titlebar_maximized_button_normal_active = themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = themes_path .. "default/titlebar/maximized_focus_active.png"
 
-theme.wallpaper = themes_path .. "default/background.png"
+theme.wallpaper = themes_path .. "background.jpg"
+-- theme.wallpaper = themes_path .. "default/background.png"
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = themes_path .. "default/layouts/fairhw.png"

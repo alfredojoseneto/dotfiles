@@ -6,94 +6,55 @@ pcall(require, "luarocks.loader")
 local gears = require("gears")
 local awful = require("awful")
 require("awful.autofocus")
+
 -- Widget and layout library
 local wibox = require("wibox")
+
 -- Theme handling library
 local beautiful = require("beautiful")
+
 -- Notification library
-local naughty = require("naughty")
+-- local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
+require("widgets.calendar-widget.calendar")
 
 -- Load Debian menu entries
 local debian = require("debian.menu")
 local has_fdo, freedesktop = pcall(require, "freedesktop")
 
--- {{{ Error handling
--- Check if awesome encountered an error during startup and fell back to
--- another config (This code will only ever execute for the fallback config)
-if awesome.startup_errors then
-	naughty.notify({
-		preset = naughty.config.presets.critical,
-		title = "Oops, there were errors during startup!",
-		text = awesome.startup_errors,
-	})
-end
-
--- Handle runtime errors after startup
-do
-	local in_error = false
-	awesome.connect_signal("debug::error", function(err)
-		-- Make sure we don't go into an endless error loop
-		if in_error then
-			return
-		end
-		in_error = true
-
-		naughty.notify({
-			preset = naughty.config.presets.critical,
-			title = "Oops, an error happened!",
-			text = tostring(err),
-		})
-		in_error = false
-	end)
-end
--- }}}
-
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 -- beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 beautiful.init(gears.filesystem.get_configuration_dir() .. "theme/theme.lua")
--- This is used later as the default terminal and editor to run.
--- terminal = "x-terminal-emulator"
-local terminal = os.getenv("TERM") or "terminator"
-local editor = os.getenv("EDITOR") or "nvim"
-local editor_cmd = terminal .. " -e " .. editor
+
+local main = {
+	layouts = require("main.layouts"),
+	tags = require("main.tags"),
+}
+
+RC = {}
+RC.vars = require("main.user-variables")
+local modkey = RC.vars.modkey
+local terminal = RC.vars.terminal
+local editor_cmd = RC.vars.editor_cmd
+
+RC.layouts = main.layouts()
+RC.tags = main.tags()
+
+-- Loading error handler
+require("main.error-handling")
 
 -- Autostart services
 awful.util.spawn_with_shell("pgrep -u $USER -x nm-applet > /dev/null || (nm-applet &)")
+awful.util.spawn_with_shell("pgrep -u $USER -x terminator > /dev/null || (terminator &)")
 awful.util.spawn_with_shell("pgrep -u $USER -x dropbox > /dev/null || (dropbox start &)")
-
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
-modkey = "Mod4"
-
--- Table of layouts to cover with awful.layout.inc, order matters.
-awful.layout.layouts = {
-	awful.layout.suit.max,
-	awful.layout.suit.tile,
-	awful.layout.suit.floating,
-	-- awful.layout.suit.tile.left,
-	-- awful.layout.suit.tile.bottom,
-	-- awful.layout.suit.tile.top,
-	-- awful.layout.suit.fair,
-	-- awful.layout.suit.fair.horizontal,
-	-- awful.layout.suit.spiral,
-	-- awful.layout.suit.spiral.dwindle,
-	-- awful.layout.suit.max.fullscreen,
-	-- awful.layout.suit.magnifier,
-	-- awful.layout.suit.corner.nw,
-	-- awful.layout.suit.corner.ne,
-	-- awful.layout.suit.corner.sw,
-	-- awful.layout.suit.corner.se,
-}
--- }}}
+awful.util.spawn_with_shell("pgrep -u $USER -x evernote > /dev/null || (evernote &)")
+-- awful.util.spawn_with_shell("pgrep -u $USER -x google-chrome > /dev/null || (google-chrome &)")
 
 -- {{{ Menu
 -- Create a launcher widget and a main menu
@@ -145,6 +106,9 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
+
+local praisewidget = wibox.widget.textbox()
+praisewidget.text = "You are great!"
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -209,7 +173,7 @@ awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
 
 	-- Each screen has its own tag table.
-	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+	-- awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
 	-- Create a promptbox for each screen
 	s.mypromptbox = awful.widget.prompt()
@@ -287,6 +251,7 @@ function sendToSpotify(command)
 		)
 	end
 end
+
 -- }}}
 
 -- {{{ Key bindings
@@ -295,7 +260,6 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
-
 	awful.key({ modkey }, "j", function()
 		awful.client.focus.byidx(1)
 	end, { description = "focus next by index", group = "client" }),
@@ -333,7 +297,6 @@ globalkeys = gears.table.join(
 	end, { description = "open a terminal", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
-
 	awful.key({ modkey }, "l", function()
 		awful.tag.incmwfact(0.05)
 	end, { description = "increase master width factor", group = "layout" }),
@@ -389,7 +352,6 @@ globalkeys = gears.table.join(
 	awful.key({}, "XF86AudioRaiseVolume", function()
 		awful.util.spawn("amixer set Master 2%+", false)
 	end, { description = "Increase volume by 2", group = "Volume control" }),
-
 	awful.key({}, "XF86AudioLowerVolume", function()
 		awful.util.spawn("amixer set Master 2%-", false)
 	end, { description = "Decrease volume by 2", group = "Volume control" }),
@@ -420,7 +382,6 @@ globalkeys = gears.table.join(
 	awful.key({}, "XF86MonBrightnessUp", function()
 		awful.util.spawn("brightnessctl -q s +10")
 	end, { description = "Increase screen brightness", group = "Brightness control" }),
-
 	awful.key({}, "XF86MonBrightnessDown", function()
 		awful.spawn("brightnessctl -q s 10-")
 	end, { description = "Decrease screen brightness", group = "Brightness control" }),
@@ -436,11 +397,9 @@ globalkeys = gears.table.join(
 	awful.key({ modkey }, "XF86AudioMute", function()
 		modules.widgets.player.control.toggle()
 	end, { description = "Toggle Pause", group = "Music player control" }),
-
 	awful.key({ modkey }, "XF86AudioLowerVolume", function()
 		modules.widgets.player.control.prev()
 	end, { description = "Previous track", group = "Music player control" }),
-
 	awful.key({ modkey }, "XF86AudioRaiseVolume", function()
 		modules.widgets.player.control.next()
 	end, { description = "Next track", group = "Music player control" })
@@ -603,11 +562,17 @@ awful.rules.rules = {
 	},
 
 	-- Add titlebars to normal clients and dialogs
-	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = false } },
+	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
 
 	-- Set Firefox to always map on the tag named "2" on screen 1.
 	-- { rule = { class = "Firefox" },
 	--   properties = { screen = 1, tag = "2" } },
+	--
+	--
+	{ rule = { class = "Terminator" }, properties = { screen = 1, tag = "  " } },
+	{ rule = { class = "Brave-browser" }, properties = { screen = 1, tag = "2" } },
+	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = "  " } },
+	{ rule = { class = "Evernote" }, properties = { screen = 1, tag = "3" } },
 }
 -- }}}
 
