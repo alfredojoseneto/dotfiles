@@ -8,9 +8,9 @@ dynamic_padding = true
 
 
 [font]
-normal = { family = "JetBrainsMono NF", style = "Regular" }
-bold = { family = "JetBrainsMono NF", style = "Bold" }
-italic = { family = "JetBrainsMono NF", style = "Medium Italic" }
-bold_italic = { family = "JetBrainsMono NF", style = "ExtraBold Italic" }
+normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
+bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
+italic = { family = "JetBrainsMono Nerd Font", style = "Medium Italic" }
+bold_italic = { family = "JetBrainsMono Nerd Font", style = "ExtraBold Italic" }
 offset = { x = 0, y = -1 }
 size = 10.5
