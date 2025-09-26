@@ -57,10 +57,10 @@ python_version(){
 
 PS1=""
 PS1="\n${FG_CYAN}$STARTLINE${FMT_RESET}" # begin arrow to prompt
-PS1+="[${FMT_BOLD}${FG_YELLOW}Py:\$(python_version)${FMT_RESET}-${FMT_BOLD}${FG_CYAN}\u${FMT_RESET}${FMT_BOLD}${FG_YELLOW}@${FMT_RESET}${FMT_BOLD}${FG_WHITE}\h${FMT_RESET}]-[${FMT_BOLD}${FG_CYAN}\W${FMT_RESET}]"
+PS1+="[${FMT_BOLD}${FG_YELLOW} \$(python_version)${FMT_RESET}-${FMT_BOLD}${FG_CYAN}\u${FMT_RESET}${FMT_BOLD}${FG_YELLOW}@${FMT_RESET}${FMT_BOLD}${FG_WHITE}\h${FMT_RESET}]-[${FMT_BOLD}${FG_CYAN}\W${FMT_RESET}]"
 PS1+="${FMT_RESET}"
 PS1+="\$(git branch 2> /dev/null | grep '^*' | colrm 1 2 | xargs -I BRANCH echo -n \"" # check if git branch exists
-PS1+="-[${FMT_BOLD}\$(parse_git_fg)BRANCH${FMT_RESET}]" # print current git branch
+PS1+="-[${FMT_BOLD}\$(parse_git_fg) BRANCH${FMT_RESET}]" # print current git branch
 PS1+="${FMT_RESET}\$(parse_git_fg)\")${FMT_RESET}\n" # end last container (either FILES or BRANCH)
 PS1+="${FG_CYAN}$ENDLINE " # end arrow to prompt
 PS1+="${FG_CYAN}\\$ " # print prompt
