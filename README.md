@@ -27,3 +27,30 @@ Settings >> Apps& & Windows >> Default Applications >> File Associations >> inod
 
 Depois, só selecionar a folder default.
 ```
+
+Configuração do hd [link](https://forums.linuxmint.com/viewtopic.php?t=335231)
+```bash
+# primeiro criar o diretório onde será montado o arquivo
+$ sudo mount /media/hd
+
+# identificar o UUID do HD e como ele está sendo identificado no /dev/sdX
+$ sudo blkid
+$ lsblk
+
+# criar o backup do /etc/fstab
+$ sudo cp /etc/fstab /etc/fstab.bak
+
+# editar o /etc/fstab
+$ sudo vim /etc/fstab
+
+# essa linha é um exemplo para adição
+UUID=0074352B74352536   /media/hd       ntfs    defaults,uid=1000,gid=1000,noatime       0       2
+
+# atualizar o daemon após a modificação
+$ sudo systemctl daemon-reload
+
+# montagem do dispositivo
+$ sudo mount -a
+
+```
+
