@@ -53,4 +53,6 @@ $ sudo systemctl daemon-reload
 $ sudo mount -a
 
 ```
+### Configuração das Fontes com o Lucid Glyph (ClearType)
+Segue as orientações nesse [link](https://github.com/maximilionus/lucidglyph)
 
