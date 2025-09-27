@@ -56,3 +56,83 @@ $ sudo mount -a
 ### Configuração das Fontes com o Lucid Glyph (ClearType)
 Segue as orientações nesse [link](https://github.com/maximilionus/lucidglyph)
 
+
+### Configuração do PS1 Bash
+Utilizar o PS1.text, mas há esses três links com informações complementares, caso deseje mudar algo
+[link-1](https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt)
+[link-2](https://wiki.archlinux.org/title/Bash/Prompt_customization)
+[link-3](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
+
+```text
+# =============================================================================
+# -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
+# =============================================================================
+if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
+  # Adapted from https://unix.stackexchange.com/a/176885/347104
+  # Create session 'main' or attach to 'main' if already exists.
+  tmux new-session -A -s main
+fi
+
+
+#==============================================================================
+#-------------------- PS1 BASH ------------------------------------------------
+#==============================================================================
+
+# Colors
+FMT_BOLD="\[\e[1m\]"
+FMT_DIM="\[\e[2m\]"
+FMT_RESET="\[\e[0m\]"
+FMT_UNBOLD="\[\e[22m\]"
+FMT_UNDIM="\[\e[22m\]"
+FG_BLACK="\[\e[30m\]"
+FG_BLUE="\[\e[34m\]"
+FG_CYAN="\[\e[36m\]"
+FG_LIGHT_CYAN="\[\e[96m\]"
+FG_GREEN="\[\e[32m\]"
+FG_LIGHT_GREEN="\[\e[92m\]"
+FG_GREY="\[\e[37m\]"
+FG_MAGENTA="\[\e[35m\]"
+FG_RED="\[\e[31m\]"
+FG_YELLOW="\[\e[33m\]"
+FG_LIGHT_YELLOW="\[\e[93m\]"
+FG_WHITE="\[\e[97m\]"
+FG_PURPLE="\[\033[1;35m\]"
+BG_BLACK="\[\e[40m\]"
+BG_BLUE="\[\e[44m\]"
+BG_CYAN="\[\e[46m\]"
+BG_GREEN="\[\e[42m\]"
+BG_MAGENTA="\[\e[45m\]"
+BG_RED="\[\e[41m\]"
+STARTLINE="\342\224\214\342\224\200"
+ENDLINE="\342\224\224\342\224\200\342\224\200\342\225\274"
+
+parse_git_bg() {
+	[[ $(git status -s 2> /dev/null) ]] && echo -e "\e[43m" || echo -e "\e[42m"
+}
+
+parse_git_fg() {
+	[[ $(git status -s 2> /dev/null) ]] && echo -e "\e[93m" || echo -e "\e[92m"
+}
+
+# Python Version
+python_version(){
+    if [[ -n $(python3 --version)  ]]
+    then
+        python3 --version | awk '{print $2 }'
+    fi
+}
+
+PS1=""
+PS1="\n${FG_CYAN}$STARTLINE${FMT_RESET}" # begin arrow to prompt
+PS1+="[${FMT_BOLD}${FG_YELLOW} \$(python_version)${FMT_RESET}-${FMT_BOLD}${FG_GREEN}\u${FMT_RESET}${FMT_BOLD}${FG_WHITE}@${FMT_RESET}${FMT_BOLD}${FG_PURPLE}\h${FMT_RESET}]-[${FMT_BOLD}${FG_CYAN}\W${FMT_RESET}]"
+PS1+="${FMT_RESET}"
+PS1+="\$(git branch 2> /dev/null | grep '^*' | colrm 1 2 | xargs -I BRANCH echo -n \"" # check if git branch exists
+PS1+="-[${FMT_BOLD}\$(parse_git_fg) BRANCH${FMT_RESET}]" # print current git branch
+PS1+="${FMT_RESET}\$(parse_git_fg)\")${FMT_RESET}\n" # end last container (either FILES or BRANCH)
+PS1+="${FG_CYAN}$ENDLINE " # end arrow to prompt
+PS1+="${FG_CYAN}\\$ " # print prompt
+PS1+="${FMT_RESET}"
+export PS1
+
+#==============================================================================
+```
