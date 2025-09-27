@@ -20,3 +20,10 @@ Configuração do git "adog"
 $ git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 ```
 
+Para mudar a cor default dos diretórios no KDE
+Os ícones que utilizo são "Tela Dracula Dark"
+```text
+Settings >> Apps& & Windows >> Default Applications >> File Associations >> inode >> directory
+
+Depois, só selecionar a folder default.
+```
