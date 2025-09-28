@@ -1,5 +1,7 @@
 # Dotfiles
 
+### Instalação dos Dotfiles
+
 
 ```bash
 $ sudo apt install stow
@@ -15,12 +17,13 @@ $ stow --target=/home/$USER/ nvim
 $ stow -t ~ alacritty
 ```
 
-Configuração do git "adog"
+### Configuração do git "adog"
 ```bash
 $ git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 ```
 
-Para mudar a cor default dos diretórios no KDE
+### Mudar a cor default dos diretórios no KDE
+
 Os ícones que utilizo são "Tela Dracula Dark"
 ```text
 Settings >> Apps& & Windows >> Default Applications >> File Associations >> inode >> directory
@@ -28,7 +31,7 @@ Settings >> Apps& & Windows >> Default Applications >> File Associations >> inod
 Depois, só selecionar a folder default.
 ```
 
-Configuração do hd [link](https://forums.linuxmint.com/viewtopic.php?t=335231)
+### Configuração do hd [link](https://forums.linuxmint.com/viewtopic.php?t=335231)
 ```bash
 # primeiro criar o diretório onde será montado o arquivo
 $ sudo mount /media/hd
@@ -53,6 +56,58 @@ $ sudo systemctl daemon-reload
 $ sudo mount -a
 
 ```
+
+### Configuração do pyenv, pipx e poetry
+
+Seguir esta sequência de instalação: pyenv >> pipx >> poetry
+
+#### 1.pyenv
+Seguir a orientação do repositório do github do pyenv [link](https://github.com/pyenv/pyenv).
+O objetivo do **pyenv** é poder gerenciar múltiplas versões do Python sem comprometer a versão do sistema.
+
+#### 2.pipx
+Seguir a orientação da documentação oficial do pipx [link](https://pipx.pypa.io/stable/installation/)
+O objetivo do **pipx** é poder instalar pacotes python, como o **poetry** em ambientes isolados e não impactar nos outros pacotes do sistema.
+
+#### 2.1.pipx configuration
+
+Instalação do pipx
+
+```bash
+$ sudo apt update
+$ sudo apt install pipx
+$ sudo pipx ensurepath --global --force
+```
+
+# instalação do autocomplete
+
+```bash
+$ pipx install argcomplete
+$ echo 'eval "$(register-python-argcomplete pipx)"' >> ~/.bashrc
+```
+
+#### 3.poetry
+Seguir a orientação da documentação oficial do poetry para instalação via pipx [link](https://python-poetry.org/docs/#installing-with-pipx).
+O objetivo do **poetry** é permitir gerenciar projetos python de uma maneira muito mais organizada.
+
+```bash
+$ pipx install poetry
+$ source ~/.bashrc
+```
+
+#### 3.1.configuração do poetry
+Após a instalação do **poetry** é importante executar algumas configurações para que ele possa ser utilizado de uma melhor maneira, em especial com o VSCode.
+Além de permitir o code completion para o bash.
+
+```bash
+$ poetry completions bash >> ~/.bash_completion/poetry
+$ echo "\n#poetry completions" >> ~/.bashrc
+$ echo "source ~/.bash_completion/poetry >> ~/.bashrc
+$ poetry config --list
+$ poetry config virtualenvs.in-project true
+$ poetry config virtualenvs.use-poetry-python true
+```
+
 ### Configuração das Fontes com o Lucid Glyph (ClearType)
 Segue as orientações nesse [link](https://github.com/maximilionus/lucidglyph)
 
