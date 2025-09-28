@@ -34,7 +34,7 @@ Depois, só selecionar a folder default.
 ### Configuração do hd [link](https://forums.linuxmint.com/viewtopic.php?t=335231)
 ```bash
 # primeiro criar o diretório onde será montado o arquivo
-$ sudo mount /media/hd
+$ sudo mkdir -p /media/hd
 
 # identificar o UUID do HD e como ele está sendo identificado no /dev/sdX
 $ sudo blkid
@@ -102,7 +102,7 @@ Além de permitir o code completion para o bash.
 ```bash
 $ poetry completions bash >> ~/.bash_completion/poetry
 $ echo "\n#poetry completions" >> ~/.bashrc
-$ echo "source ~/.bash_completion/poetry >> ~/.bashrc
+$ echo "source ~/.bash_completion/poetry" >> ~/.bashrc
 $ poetry config --list
 $ poetry config virtualenvs.in-project true
 $ poetry config virtualenvs.use-poetry-python true
