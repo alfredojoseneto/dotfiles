@@ -79,7 +79,7 @@ $ sudo apt install pipx
 $ sudo pipx ensurepath --global --force
 ```
 
-# instalação do autocomplete
+#### 2.1.1.instalação do autocomplete
 
 ```bash
 $ pipx install argcomplete
@@ -111,6 +111,15 @@ $ poetry config virtualenvs.use-poetry-python true
 ### Configuração das Fontes com o Lucid Glyph (ClearType)
 Segue as orientações nesse [link](https://github.com/maximilionus/lucidglyph)
 
+
+### Instalação do SDK Man
+Basta seguir as orientaçãoes do repositório [link](https://sdkman.io/install/)
+
+```bash
+$ curl -s "https://get.sdkman.io" | bash
+$ source "$HOME/.sdkman/bin/sdkman-init.sh"
+$ sdk install java 25-open
+```
 
 ### Configuração do PS1 Bash
 Utilizar o PS1.text, mas há esses três links com informações complementares, caso deseje mudar algo
