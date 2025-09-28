@@ -121,6 +121,20 @@ $ source "$HOME/.sdkman/bin/sdkman-init.sh"
 $ sdk install java 25-open
 ```
 
+### Instalação do DBeaver
+
+```bash
+$ sudo  wget -O /usr/share/keyrings/dbeaver.gpg.key https://dbeaver.io/debs/dbeaver.gpg.key
+$ echo "deb [signed-by=/usr/share/keyrings/dbeaver.gpg.key] https://dbeaver.io/debs/dbeaver-ce /" | sudo tee /etc/apt/sources.list.d/dbeaver.list
+$ sudo apt-get update && sudo apt-get install dbeaver-ce
+```
+
+### Modernize APT Sources
+
+```bash
+$ sudo apt modernize-sources
+```
+
 ### Configuração do PS1 Bash
 Utilizar o PS1.text, mas há esses três links com informações complementares, caso deseje mudar algo
 [link-1](https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt)
