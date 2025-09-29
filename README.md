@@ -1,5 +1,23 @@
 # Dotfiles
 
+
+### Resolução do problema da internet
+
+```bash
+# identificando qual o nome da placa de rede
+$ lspci
+
+# atualizando as informações para o tipo de placa de rede
+$ echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+$ echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
+$ echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+
+# atualizando as informações da placa no kernel
+$ sudo rmmod ath9k
+$ sudo modprobe ath9k
+$ sudo systemctl restart NetworkManager
+```
+
 ### Instalação dos Dotfiles
 
 
