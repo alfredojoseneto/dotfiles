@@ -12,6 +12,9 @@ $ echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
 $ echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
 $ echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
 
+# criação do arquivo com as configurações do bluetooth
+$ echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="04ca", ATTR{idProduct}=="3014", ATTR{power/autosuspend}="-1' | sudo tee /etc/udev/rules.d/50-usb_power_save.rules
+
 # atualizando as informações da placa no kernel
 $ sudo rmmod ath9k
 $ sudo modprobe ath9k
