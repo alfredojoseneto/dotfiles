@@ -156,6 +156,17 @@ $ sudo apt-get update && sudo apt-get install dbeaver-ce
 $ sudo apt modernize-sources
 ```
 
+### Ajuste no IBus
+
+Esse é um processo para corrigir os avisos constantes do IBus [link](https://discuss.kde.org/t/ibus-issue-with-wayland/3680/14)
+
+```bash
+$ sudo apt install -y zenity
+$ im-config
+```
+Depois do "im-config", seguir a seguinte ordem: OK -> YES > do not activate any IM from im-config and use desktop default -> OK -> reboot
+As variávies de ambiente não serão mais "setadas" e com isso os warnings não serão mais apresentados.
+
 ### Configuração do PS1 Bash
 Utilizar o PS1.text, mas há esses três links com informações complementares, caso deseje mudar algo
 [link-1](https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt)
