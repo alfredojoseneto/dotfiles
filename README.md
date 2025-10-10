@@ -21,6 +21,12 @@ $ sudo modprobe ath9k
 $ sudo systemctl restart NetworkManager
 ```
 
+### Resolução do problema do bluetooth
+```bash
+# irá remover o plugin que está competindo com o Pipewire
+$ sudo apt purge -y bluez-alsa-utils
+```
+
 ### Instalação dos Dotfiles
 
 
