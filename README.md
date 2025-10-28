@@ -27,6 +27,13 @@ $ sudo systemctl restart NetworkManager
 $ sudo apt purge -y bluez-alsa-utils
 ```
 
+### Instalação do Neovim, LazyVim e do Dracula Theme
+
+- [Nvim](https://github.com/neovim/neovim)
+- [LazyVim](https://www.lazyvim.org/)
+- [Dracula Theme for LazyVim](https://github.com/Mofiqul/dracula.nvim)
+
+
 ### Instalação dos Dotfiles
 
 
@@ -147,6 +154,10 @@ $ curl -s "https://get.sdkman.io" | bash
 $ source "$HOME/.sdkman/bin/sdkman-init.sh"
 $ sdk install java 25-open
 ```
+
+### Instalação do [nvm](https://github.com/nvm-sh/nvm)
+Instalação do nvm para gerenciamento das versões do node.js.
+
 
 ### Instalação do DBeaver
 
