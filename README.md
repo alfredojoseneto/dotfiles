@@ -47,8 +47,9 @@ sudo apt purge -y bluez-alsa-utils
 
 Seguir a orientação do [link](https://github.com/alacritty/alacritty/blob/master/INSTALL.md#prerequisites) do GitHub do Alacritty.
 
-### Instalação do Neovim, LazyVim e do Dracula Theme
+### Instalação do Docker, Neovim, LazyVim e do Dracula Theme
 
+- [Docker][https://docs.docker.com/engine/install/debian/]
 - [Nvim](https://github.com/neovim/neovim)
 - [LazyVim](https://www.lazyvim.org/)
 - [Dracula Theme for LazyVim](https://github.com/Mofiqul/dracula.nvim)
