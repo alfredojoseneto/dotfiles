@@ -1,31 +1,51 @@
 # Dotfiles
 
+### Instalação do desktop-file-utils
+Importante para a instalação do alacritty
+
+```bash
+sudo apt install desktop-file-util`
+```
+
+### Instalação do NerdFonts
+
+```bash
+mkdir -p ~/.local/share/fonts
+wget -O JetBrainsMono.zip  https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip
+unzip JetBrainsMono.zip -d ~/.local/share/fonts/
+rm JetBrainsMono.zip
+```
+
 
 ### Resolução do problema da internet
 
 ```bash
 # identificando qual o nome da placa de rede
-$ lspci
+lspci
 
 # atualizando as informações para o tipo de placa de rede
-$ echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
-$ echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
-$ echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
+echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
 
 # criação do arquivo com as configurações do bluetooth
-$ echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="04ca", ATTR{idProduct}=="3014", ATTR{power/autosuspend}="-1' | sudo tee /etc/udev/rules.d/50-usb_power_save.rules
+echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="04ca", ATTR{idProduct}=="3014", ATTR{power/autosuspend}="-1' | sudo tee /etc/udev/rules.d/50-usb_power_save.rules
 
 # atualizando as informações da placa no kernel
-$ sudo rmmod ath9k
-$ sudo modprobe ath9k
-$ sudo systemctl restart NetworkManager
+sudo rmmod ath9k
+sudo modprobe ath9k
+sudo systemctl restart NetworkManager
 ```
 
 ### Resolução do problema do bluetooth
 ```bash
 # irá remover o plugin que está competindo com o Pipewire
-$ sudo apt purge -y bluez-alsa-utils
+sudo apt purge -y bluez-alsa-utils
 ```
+
+### Instalação do alacritty
+
+Seguir a orientação do [link](https://github.com/alacritty/alacritty/blob/master/INSTALL.md#prerequisites) do GitHub do Alacritty.
 
 ### Instalação do Neovim, LazyVim e do Dracula Theme
 
@@ -38,22 +58,22 @@ $ sudo apt purge -y bluez-alsa-utils
 
 
 ```bash
-$ sudo apt install stow
+sudo apt install stow
 ```
 
 Clone the github repository and use the commands below to set the target folder
 
 ```bash
-$ stow --target=/home/$USER/ <package>
+stow --target=/home/$USER/ <package>
 
 # example  ---------------------------------------------------------------------
-$ stow --target=/home/$USER/ nvim
-$ stow -t ~ alacritty
+stow --target=/home/$USER/ nvim
+stow -t ~ alacritty
 ```
 
 ### Configuração do git "adog"
 ```bash
-$ git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 ```
 
 ### Mudar a cor default dos diretórios no KDE
@@ -68,26 +88,26 @@ Depois, só selecionar a folder default.
 ### Configuração do hd [link](https://forums.linuxmint.com/viewtopic.php?t=335231)
 ```bash
 # primeiro criar o diretório onde será montado o arquivo
-$ sudo mkdir -p /media/hd
+sudo mkdir -p /media/hd
 
 # identificar o UUID do HD e como ele está sendo identificado no /dev/sdX
-$ sudo blkid
-$ lsblk
+sudo blkid
+lsblk
 
 # criar o backup do /etc/fstab
-$ sudo cp /etc/fstab /etc/fstab.bak
+sudo cp /etc/fstab /etc/fstab.bak
 
 # editar o /etc/fstab
-$ sudo vim /etc/fstab
+sudo vim /etc/fstab
 
 # essa linha é um exemplo para adição
 UUID=0074352B74352536   /media/hd       ntfs    defaults,uid=1000,gid=1000,noatime       0       2
 
 # atualizar o daemon após a modificação
-$ sudo systemctl daemon-reload
+sudo systemctl daemon-reload
 
 # montagem do dispositivo
-$ sudo mount -a
+sudo mount -a
 
 ```
 
@@ -108,16 +128,16 @@ O objetivo do **pipx** é poder instalar pacotes python, como o **poetry** em am
 Instalação do pipx
 
 ```bash
-$ sudo apt update
-$ sudo apt install pipx
-$ sudo pipx ensurepath --global --force
+sudo apt update
+sudo apt install pipx
+sudo pipx ensurepath --global --force
 ```
 
 #### 2.1.1.instalação do autocomplete
 
 ```bash
-$ pipx install argcomplete
-$ echo 'eval "$(register-python-argcomplete pipx)"' >> ~/.bashrc
+pipx install argcomplete
+echo 'eval "$(register-python-argcomplete pipx)"' >> ~/.bashrc
 ```
 
 #### 3.poetry
@@ -125,8 +145,8 @@ Seguir a orientação da documentação oficial do poetry para instalação via 
 O objetivo do **poetry** é permitir gerenciar projetos python de uma maneira muito mais organizada.
 
 ```bash
-$ pipx install poetry
-$ source ~/.bashrc
+pipx install poetry
+source ~/.bashrc
 ```
 
 #### 3.1.configuração do poetry
@@ -134,12 +154,12 @@ Após a instalação do **poetry** é importante executar algumas configuraçõe
 Além de permitir o code completion para o bash.
 
 ```bash
-$ poetry completions bash >> ~/.bash_completion/poetry
-$ echo "\n#poetry completions" >> ~/.bashrc
-$ echo "source ~/.bash_completion/poetry" >> ~/.bashrc
-$ poetry config --list
-$ poetry config virtualenvs.in-project true
-$ poetry config virtualenvs.use-poetry-python true
+poetry completions bash >> ~/.bash_completion/poetry
+echo "\n#poetry completions" >> ~/.bashrc
+echo "source ~/.bash_completion/poetry" >> ~/.bashrc
+poetry config --list
+poetry config virtualenvs.in-project true
+poetry config virtualenvs.use-poetry-python true
 ```
 
 ### Configuração das Fontes com o Lucid Glyph (ClearType)
@@ -150,9 +170,9 @@ Segue as orientações nesse [link](https://github.com/maximilionus/lucidglyph)
 Basta seguir as orientaçãoes do repositório [link](https://sdkman.io/install/)
 
 ```bash
-$ curl -s "https://get.sdkman.io" | bash
-$ source "$HOME/.sdkman/bin/sdkman-init.sh"
-$ sdk install java 25-open
+curl -s "https://get.sdkman.io" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+sdk install java 25-open
 ```
 
 ### Instalação do [nvm](https://github.com/nvm-sh/nvm)
@@ -162,15 +182,15 @@ Instalação do nvm para gerenciamento das versões do node.js.
 ### Instalação do DBeaver
 
 ```bash
-$ sudo  wget -O /usr/share/keyrings/dbeaver.gpg.key https://dbeaver.io/debs/dbeaver.gpg.key
-$ echo "deb [signed-by=/usr/share/keyrings/dbeaver.gpg.key] https://dbeaver.io/debs/dbeaver-ce /" | sudo tee /etc/apt/sources.list.d/dbeaver.list
-$ sudo apt-get update && sudo apt-get install dbeaver-ce
+sudo  wget -O /usr/share/keyrings/dbeaver.gpg.key https://dbeaver.io/debs/dbeaver.gpg.key
+echo "deb [signed-by=/usr/share/keyrings/dbeaver.gpg.key] https://dbeaver.io/debs/dbeaver-ce /" | sudo tee /etc/apt/sources.list.d/dbeaver.list
+sudo apt-get update && sudo apt-get install dbeaver-ce
 ```
 
 ### Modernize APT Sources
 
 ```bash
-$ sudo apt modernize-sources
+sudo apt modernize-sources
 ```
 
 ### Ajuste no IBus
@@ -178,8 +198,8 @@ $ sudo apt modernize-sources
 Esse é um processo para corrigir os avisos constantes do IBus [link](https://discuss.kde.org/t/ibus-issue-with-wayland/3680/14)
 
 ```bash
-$ sudo apt install -y zenity
-$ im-config
+sudo apt install -y zenity
+im-config
 ```
 Depois do "im-config", seguir a seguinte ordem: OK -> YES > do not activate any IM from im-config and use desktop default -> OK -> reboot
 As variávies de ambiente não serão mais "setadas" e com isso os warnings não serão mais apresentados.
