@@ -76,6 +76,14 @@ stow -t ~ alacritty
 git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 ```
 
+### Instalação do Dracula Theme para o VIM
+
+```bash
+mkdir -p ~/.vim/pack/themes/start
+cd ~/.vim/pack/themes/start
+git clone https://github.com/dracula/vim.git dracula
+```
+
 ### Mudar a cor default dos diretórios no KDE
 
 Os ícones que utilizo são "Tela Dracula Dark"
