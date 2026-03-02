@@ -1,6 +1,6 @@
 [window]
 startup_mode = "Maximized"
-opacity = 0.90
+opacity = 1.0
 padding = { x = 0, y = 0 }
 dynamic_padding = true
 
