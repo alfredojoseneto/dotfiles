@@ -56,8 +56,14 @@ python_version(){
     fi
 }
 
-function virtualenv {
-    echo "${VIRTUAL_ENV:+(venv:${VIRTUAL_ENV##*/})}"
+function virtualenv() {
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and leave only the env name, wrapped in parentheses
+        echo "($(basename "$VIRTUAL_ENV"))"
+    else
+        # If no env is active, output nothing
+        echo ""
+    fi
 }
 
 # disable the default virtualenv prompt change
