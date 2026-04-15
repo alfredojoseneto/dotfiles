@@ -7,6 +7,10 @@ if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
   tmux new-session -A -s main
 fi
 
+# reading multiple bash completions from a directory
+for file in ~/.bash_completion/*; do
+  [ -r "$file" ] && source "$file"
+done
 
 #==============================================================================
 #-------------------- PS1 BASH ------------------------------------------------
