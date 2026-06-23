@@ -17,19 +17,27 @@ rm JetBrainsMono.zip
 ```
 
 
-### Resolução do problema da internet
+### Resolução do problema da internet e do bluetooh
 
 ```bash
-# identificando qual o nome da placa de rede
-lspci
+# identificando qual o nome da placa de rede e do bluetooth
+lspci -k | grep -A3 -i network
+lsmod | grep rtl
+
+# instalação do firmware
+sudo apt install firmware-iwlwifi
+
+# atualizando o initramfs
+sudo update-initramfs -u
 
 # atualizando as informações para o tipo de placa de rede
-echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
-echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
-echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+sudo echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+sudo echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
+sudo echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
+sudo echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/wifi-powersave.conf
 
 # criação do arquivo com as configurações do bluetooth
-echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="04ca", ATTR{idProduct}=="3014", ATTR{power/autosuspend}="-1' | sudo tee /etc/udev/rules.d/50-usb_power_save.rules
+sudo echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="04ca", ATTR{idProduct}=="3014", ATTR{power/autosuspend}="-1"' | sudo tee /etc/udev/rules.d/50-usb_power_save.rules
 
 # atualizando as informações da placa no kernel
 sudo rmmod ath9k
@@ -37,7 +45,7 @@ sudo modprobe ath9k
 sudo systemctl restart NetworkManager
 ```
 
-### Resolução do problema do bluetooth
+### Resolução do problema do bluetooth que está com o plugin inadequado
 ```bash
 # irá remover o plugin que está competindo com o Pipewire
 sudo apt purge -y bluez-alsa-utils
