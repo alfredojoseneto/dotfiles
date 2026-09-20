@@ -67,7 +67,7 @@ deleted = "[✘$count](bold red)"
 
 
 [custom.git_clean]
-command = 'test -z "$(git status | grep -ie changes)" && echo "✓"'
+command = 'test -z "$(git status | grep -ie changes)" && test -z "$(git status | grep -ie pull)" && echo "✓"'
 when = 'git rev-parse --is-inside-work-tree 2>/dev/null'
 require_repo = true
 style = "bold green"
