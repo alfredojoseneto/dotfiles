@@ -57,22 +57,21 @@ staged = "[+$count](bold green)"
 renamed = "[»$count](bold cyan)"
 deleted = "[✘$count](bold red)"
 
-# [custom.git_clean]
-# # command = "git diff --quiet && git diff --cached --quiet && test -z \"$(git status --porcelain)\" && git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && test -z \"$(git rev-list --count HEAD..@{u})\" && test -z \"$(git rev-list --count @{u}..HEAD)\""
-# #command = " test -z \"$(git status | grep -ie changes)"
-# when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
-# require_repo = true
-# symbol = "✓"
-# style = "bold green"
-# format = "[ ($symbol) teste ]($style) "
-
-
 [custom.git_clean]
-command = 'test -z "$(git status | grep -ie changes)" && echo "✓"'
-when = 'git rev-parse --is-inside-work-tree 2>/dev/null'
+command = "git diff --quiet && git diff --cached --quiet && test -z \"$(git status --porcelain)\" && git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && test -z \"$(git rev-list --count HEAD..@{u})\" && test -z \"$(git rev-list --count @{u}..HEAD)\""
+when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
 require_repo = true
+symbol = "✓"
 style = "bold green"
-format = "[$output]($style) "
+format = "[ ($symbol) ]($style) "
+
+
+# [custom.git_clean]
+# command = 'test -z "$(git status | grep -ie changes)" && echo "✓"'
+# when = 'git rev-parse --is-inside-work-tree 2>/dev/null'
+# require_repo = true
+# style = "bold green"
+# format = "[$output]($style) "
 
 
 [fill]
