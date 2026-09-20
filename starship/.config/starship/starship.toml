@@ -1,10 +1,14 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
+${custom.open_bracket}\
 $os\
 $username\
 $hostname\
+${custom.close_bracket}\
+-${custom.open_bracket}\
 $directory\
+${custom.close_bracket}\
 $git_branch\
 $git_status\
 ${custom.git_clean}\
@@ -23,8 +27,8 @@ $character"""
 palette = "dracula"
 
 [directory]
-style = 'bold fg:green'
-format = '[\[$path\]]($style)'
+style = 'bold fg:cyan'
+format = '[ $path ]($style)'
 truncation_length = 3
 truncation_symbol = '…/'
 truncate_to_repo = false
@@ -67,8 +71,18 @@ require_repo = true
 style = "bold green"
 format = '([\[](bold purple)[$output](bold green)[\]](bold purple)) '
 
+[custom.open_bracket]
+command = 'echo "["'
+when = 'echo ""'
+format = '[$output](bold white)'
+
+[custom.close_bracket]
+command = 'echo "]"'
+when = 'echo ""'
+format = '[$output](bold white)'
+
 [username]
-style_user = 'bold cyan'
+style_user = 'bold green'
 style_root = 'bold red'
 format = '[$user]($style)'
 disabled = false
