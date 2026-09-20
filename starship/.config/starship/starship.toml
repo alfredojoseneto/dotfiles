@@ -157,7 +157,7 @@ style = 'fg:gray'
 format = '[$duration]($style)'
 
 [os]
-style = "cyan"
+style = "purple"
 format = "[ $symbol ]($style)"
 disabled = false
 
