@@ -5,10 +5,12 @@ $os\
 $directory\
 $git_branch\
 $git_status\
+$custom.git_clean\
 $fill\
 $aws\
 $nodejs\
 $python\
+$package\
 $docker_context\
 $jobs\
 $cmd_duration\
@@ -55,6 +57,13 @@ staged = "[+$count](bold green)"
 renamed = "[»$count](bold cyan)"
 deleted = "[✘$count](bold red)"
 
+[custom.git_clean]
+command = "git diff --quiet && git diff --cached --quiet && test -z \"$(git status --porcelain)\" && git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && test -z \"$(git rev-list --count HEAD..@{u})\" && test -z \"$(git rev-list --count @{u}..HEAD)\""
+when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
+require_repo = true
+symbol = "✓"
+style = "bold green"
+format = "[ ($symbol) ]($style) "
 
 [fill]
 symbol = ' '
