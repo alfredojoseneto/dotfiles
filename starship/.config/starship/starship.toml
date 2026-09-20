@@ -39,7 +39,7 @@ format = '[on](white) [$symbol$branch ]($style)'
 
 [git_status]
 style = "bold purple" # Base color for the status block
-format = '([\[$all_status$ahead_behind\]]($style) )'
+format = '([\[$all_status$ahead_behind\]($up_to_date)]($style) )'
 
 # Colorize specific status indicators
 conflicted = "[═$count](bold red)"
