@@ -2,10 +2,12 @@
 
 format = """
 $os\
+$username\
+$hostname\
 $directory\
 $git_branch\
 $git_status\
-$custom\
+${custom.git_clean}\
 $fill\
 $aws\
 $nodejs\
@@ -21,23 +23,24 @@ $character"""
 palette = "dracula"
 
 [directory]
-style = 'bold fg:cyan'
-format = '[$path ]($style)'
+style = 'bold fg:green'
+format = '[\[$path\]]($style)'
 truncation_length = 3
 truncation_symbol = '…/'
 truncate_to_repo = false
 
-[directory.substitutions]
-'Documents' = '󰈙'
-'Downloads' = ' '
-'Music' = ' '
-'Pictures' = ' '
+# [directory.substitutions]
+# 'Documents' = '󰈙'
+# 'Downloads' = ' '
+# 'Music' = ' '
+# 'Pictures' = ' '
+# 'Github' = ''
+# 'github' = ''
 
 [git_branch]
 style = 'fg:purple'
 symbol = ' '
-format = '[on](white) [$symbol$branch ]($style)'
-
+format = ' [on](white) [$symbol$branch ]($style)'
 
 [git_status]
 style = "bold purple" # Base color for the status block
@@ -57,23 +60,27 @@ staged = "[+$count](bold green)"
 renamed = "[»$count](bold cyan)"
 deleted = "[✘$count](bold red)"
 
-# [custom.git_clean]
-# command = "git diff --quiet && git diff --cached --quiet && test -z \"$(git status --porcelain)\" && git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1 && test -z \"$(git rev-list --count HEAD..@{u})\" && test -z \"$(git rev-list --count @{u}..HEAD)\""
-# when = "git rev-parse --is-inside-work-tree >/dev/null 2>&1"
-# require_repo = true
-# symbol = "✓"
-# style = "bold green"
-# format = "[✓]($style) "
-
-
 [custom.git_clean]
 command = 'test -z "$(git status | grep -ie changes)" && test -z "$(git status | grep -ie pull)" && test -z "$(git status | grep -ie push)" && test -z "$(git status | grep -ie ahead)" && test -z "$(git status | grep -ie behind)" && echo "✓"'
 when = 'git rev-parse --is-inside-work-tree 2>/dev/null'
 require_repo = true
 style = "bold green"
-# format = "[$output]($style) "
 format = '([\[](bold purple)[$output](bold green)[\]](bold purple)) '
 
+[username]
+style_user = 'bold cyan'
+style_root = 'bold red'
+format = '[$user]($style)'
+disabled = false
+show_always = true
+aliases = { "corpuser034g" = "matchai" }
+
+[hostname]
+ssh_only = false
+format = '[$ssh_symbol](bold purple)@[$hostname](bold pink) '
+trim_at = '.companyname.com'
+disabled = false
+aliases = { "alfredojosenetos-MacBook-Pro.local" = "macbook" }
 
 [fill]
 symbol = ' '
@@ -85,7 +92,6 @@ format = '[${symbol}${pyenv_prefix} ($version) (\($virtualenv\) )]($style)'
 pyenv_version_name = true  # need to install pyenv
 pyenv_prefix = ''
 detect_env_vars = [ "PATH" ]
-
 
 [lua]
 symbol = ' '
@@ -164,7 +170,6 @@ Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 Pop = ""
-
 
 # Define Dracula color palette
 [palettes.dracula]
