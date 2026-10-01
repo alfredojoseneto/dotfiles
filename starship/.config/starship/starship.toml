@@ -90,8 +90,9 @@ show_always = true
 aliases = { "corpuser034g" = "matchai" }
 
 [hostname]
+ssh_symbol = "  "
 ssh_only = false
-format = '[$ssh_symbol](bold purple)@[$hostname](bold pink) '
+format = '@[$hostname](bold pink)[$ssh_symbol](bold purple)'
 trim_at = '.companyname.com'
 disabled = false
 aliases = { "alfredojosenetos-MacBook-Pro.local" = "macbook-pro" }
@@ -163,7 +164,7 @@ disabled = false
 
 [os.symbols]
 Windows = "󰍲"
-Ubuntu = "󰕈"
+Ubuntu = ""
 SUSE = ""
 Raspbian = "󰐿"
 Mint = "󰣭"
