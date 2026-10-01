@@ -1,10 +1,62 @@
 # Dotfiles
 
-### Instalação do desktop-file-utils
-Importante para a instalação do alacritty
+### Instalação e Configuração do ZSH e configuração do oh-my-zsh
+Primeiramente iremos instalar o zsh e trocar para o zsh como default shell
 
 ```bash
-sudo apt install desktop-file-util`
+sudo apt install -y zsh
+chsh -s $(which zsh)
+
+# instalação do oh-my-zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+# instalação do autossugestion
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+
+# instalação do syntax highlight
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+
+```
+
+Para a instalação dos plugins, edite a linha `plugins` no arquivo `.zshrc`e cole os valores abaixo
+
+```bash
+plugins=(
+ ansible
+ docker
+ docker-compose
+ dotenv
+ extract
+ git
+ man
+ poetry
+ pyenv
+ python
+ ssh
+ ssh-agent
+ sudo
+ tmux
+ uv
+ vscode
+ zsh-autosuggestions
+ zsh-syntax-highlighting
+)
+```
+
+### Instalação do Starship
+O **Starship** é uma customização para o shell para deixar ele mais elegante.
+
+```bash
+# instalação
+curl -sS https://starship.rs/install.sh | sh
+
+# adicionando as configurações por meio do stow
+cd dotfiles
+stow --target=$HOME starship
+
+# adicionando as configurações
+echo 'export STARSHIP_CONFIG=~/.config/starship/starship.toml' | tee -a ~/.zshrc
+echo 'eval "$(starship init zsh)"' | tee -a ~/.zshrc
 ```
 
 ### Instalação do NerdFonts
@@ -15,6 +67,15 @@ wget -O JetBrainsMono.zip  https://github.com/ryanoasis/nerd-fonts/releases/down
 unzip JetBrainsMono.zip -d ~/.local/share/fonts/
 rm JetBrainsMono.zip
 ```
+
+
+### Instalação do desktop-file-utils
+Importante para a instalação do alacritty
+
+```bash
+sudo apt install desktop-file-util`
+```
+
 
 
 ### Resolução do problema da internet e do bluetooh
