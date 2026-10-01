@@ -59,6 +59,8 @@ echo 'export STARSHIP_CONFIG=~/.config/starship/starship.toml' | tee -a ~/.zshrc
 echo 'eval "$(starship init zsh)"' | tee -a ~/.zshrc
 ```
 
+[Here](https://starship.rs/presets/nerd-font) are a lot of symbols that you can use. You can find
+
 ### Instalação do NerdFonts
 
 ```bash
