@@ -94,7 +94,7 @@ ssh_only = false
 format = '[$ssh_symbol](bold purple)@[$hostname](bold pink) '
 trim_at = '.companyname.com'
 disabled = false
-aliases = { "alfredojosenetos-MacBook-Pro.local" = "macbook" }
+aliases = { "alfredojosenetos-MacBook-Pro.local" = "macbook-pro" }
 
 [fill]
 symbol = ' '
