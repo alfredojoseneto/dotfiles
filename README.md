@@ -8,11 +8,24 @@ Vamos instalar o `Homebrew` pois ele vai gerenciar a instalação de todos as de
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
+### Instalação do Stow + Clone dos Dotfiles
+
+O **stow** vai permitir restaurar adequadamente todas as configurações dos **dotfiles**
+
+```bash
+# instalação do stow
+brew install stow
+
+# clone dos dotfiles
+mkdir ~/dotfiles
+git clone https://github.com/alfredojoseneto/dotfiles.git ~/dotfiles
+```
+
 ### Instalação e configuração do ZSH, oh-my-zsh
 
 ```bash
 # instalação so zsh, autocompletions and auto suggestions
-brew install zsh zsh-completions zsh-autosuggestions
+brew install zsh
 
 # adicição do zsh entre os shell disponíveis
 echo "/opt/homebrew/bin/zsh" | sudo tee -a /etc/shells
@@ -29,41 +42,16 @@ git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugi
 # instalação do syntax highlight
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 
-# instalação do autocomplete
-#git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
-
 # instalação do zsh-fast-syntax-highlight
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
 
+# adidicona as importações do autocomplete, syntax highlight e fast-syntax-high-light
+echo 'source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh' | tee -a ~/.zshrc
+echo 'source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
+echo 'source $ZSH_CUSTOM/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
 ```
-To adjust the autocompletin on mac, follow the instructions:
-```bash
-# To activate these completions, add the following to your .zshrc:
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-
-  autoload -Uz compinit
-  compinit
-fi
-
-#You may also need to force rebuild `zcompdump`:
-rm -f ~/.zcompdump; compinit
-
-#Additionally, if you receive "zsh compinit: insecure directories" warnings when attempting
-#to load these completions, you may need to run these commands:
-chmod go-w '/opt/homebrew/share'
-chmod -R go-w '/opt/homebrew/share/zsh'
-```
-
-Adicionando as `auto-suggestions` no `.zshrc`.
-```bash
-echo 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh' | tee -a ~/.zshrc
-```
-
-
 
 Aqui se encontram os plugins a serem utilizados. Procure por `plugins` e troque pelas linhas abaixo.
-
 ```bash
 plugins=(
  ansible
@@ -88,90 +76,71 @@ plugins=(
 )
 ```
 
-### Instalação do desktop-file-utils
-Importante para a instalação do alacritty
-
-```bash
-sudo apt install desktop-file-util`
-```
-
 ### Instalação do NerdFonts
 
 ```bash
-mkdir -p ~/.local/share/fonts
-wget -O JetBrainsMono.zip  https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip
-unzip JetBrainsMono.zip -d ~/.local/share/fonts/
-rm JetBrainsMono.zip
+brew install --cask font-jetbrains-mono-nerd-font
 ```
 
+### Configuração do git-adog
 
-### Resolução do problema da internet e do bluetooh
-
-```bash
-# identificando qual o nome da placa de rede e do bluetooth
-lspci -k | grep -A3 -i network
-lsmod | grep rtl
-
-# instalação do firmware
-sudo apt install firmware-iwlwifi
-
-# atualizando o initramfs
-sudo update-initramfs -u
-
-# atualizando as informações para o tipo de placa de rede
-sudo echo "options ath9k nohwcrypt=1" | sudo tee  /etc/modprobe.d/ath9k.conf
-sudo echo "options ath9k power_save=0" | sudo tee  /etc/modprobe.d/ath9k.conf
-sudo echo "options ath9k power_schema=1" | sudo tee  /etc/modprobe.d/ath9k.conf
-sudo echo -e "[connection]\nwifi.powersave = 2" | sudo tee /etc/NetworkManager/conf.d/wifi-powersave.conf
-
-# criação do arquivo com as configurações do bluetooth
-sudo echo 'ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="04ca", ATTR{idProduct}=="3014", ATTR{power/autosuspend}="-1"' | sudo tee /etc/udev/rules.d/50-usb_power_save.rules
-
-# atualizando as informações da placa no kernel
-sudo rmmod ath9k
-sudo modprobe ath9k
-sudo systemctl restart NetworkManager
-```
-
-### Resolução do problema do bluetooth que está com o plugin inadequado
-```bash
-# irá remover o plugin que está competindo com o Pipewire
-sudo apt purge -y bluez-alsa-utils
-```
-
-### Instalação do alacritty
-
-Seguir a orientação do [link](https://github.com/alacritty/alacritty/blob/master/INSTALL.md#prerequisites) do GitHub do Alacritty.
-
-### Instalação do Docker, Neovim, LazyVim e do Dracula Theme
-
-- [Docker][https://docs.docker.com/engine/install/debian/]
-- [Nvim](https://github.com/neovim/neovim)
-- [LazyVim](https://www.lazyvim.org/)
-- [Dracula Theme for LazyVim](https://github.com/Mofiqul/dracula.nvim)
-
-
-### Instalação dos Dotfiles
-
-
-```bash
-sudo apt install stow
-```
-
-Clone the github repository and use the commands below to set the target folder
-
-```bash
-stow --target=/home/$USER/ <package>
-
-# example  ---------------------------------------------------------------------
-stow --target=/home/$USER/ nvim
-stow -t ~ alacritty
-```
-
-### Configuração do git "adog"
 ```bash
 git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 ```
+
+### Instalação do Alacritty
+
+Seguir a instalação do [site do Alacritty](https://alacritty.org/). Como é open source eles não pagam para registrar no site da apple. Por conta disto, precisa sinalizar para o macOS que é não é um software malicioso e que pode sair da quarentena.
+
+```bash
+# adição do alacritty às exceções de quarentena do macOS
+xattr -rd com.apple.quarantine /Applications/Alacritty.app
+
+# restauração dos dotfiles do alacritty
+cd ~/dotfiles
+stow --target=$HOME alacritty
+```
+
+### Instalação do tmux
+
+Após instalar o tmux, restaurar os **dotfiles** e inserir as instruções no arquivo **.zshrc**. Abra o terminal e execute o comando `ctrl + B` depois `Shift + I`. Isso vai ativar o **prefix** e depois instalar as dependências.
+
+```bash
+# instalação do tmux
+brew install tmux
+
+# instalação das configurações do tmux
+cd ~/dotfiles
+stow --target=$HOME tmux
+
+echo '
+# =============================================================================
+# -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
+# =============================================================================
+if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
+  # Adapted from https://unix.stackexchange.com/a/176885/347104
+  # Create session 'main' or attach to 'main' if already exists.
+  tmux new-session -A -s main
+fi
+' | tee -a ~/.zshrc
+```
+
+### Instalação do Starship
+O **Starship** é uma customização para o shell para deixar ele mais elegante.
+
+```bash
+# instalação
+curl -sS https://starship.rs/install.sh | sh
+
+# adicionando as configurações por meio do stow
+cd ~/dotfiles
+stow --target=$HOME starship
+
+# adicionando as configurações
+echo 'export STARSHIP_CONFIG=~/.config/starship/starship.toml' | tee -a ~/.zshrc
+echo 'eval "$(starship init zsh)"' | tee -a ~/.zshrc
+```
+
 
 ### Instalação do Dracula Theme para o VIM
 
@@ -179,41 +148,6 @@ git config --global alias.adog "log --graph --abbrev-commit --decorate --format=
 mkdir -p ~/.vim/pack/themes/start
 cd ~/.vim/pack/themes/start
 git clone https://github.com/dracula/vim.git dracula
-```
-
-### Mudar a cor default dos diretórios no KDE
-
-Os ícones que utilizo são "Tela Dracula Dark"
-```text
-Settings >> Apps& & Windows >> Default Applications >> File Associations >> inode >> directory
-
-Depois, só selecionar a folder default.
-```
-
-### Configuração do hd [link](https://forums.linuxmint.com/viewtopic.php?t=335231)
-```bash
-# primeiro criar o diretório onde será montado o arquivo
-sudo mkdir -p /media/hd
-
-# identificar o UUID do HD e como ele está sendo identificado no /dev/sdX
-sudo blkid
-lsblk
-
-# criar o backup do /etc/fstab
-sudo cp /etc/fstab /etc/fstab.bak
-
-# editar o /etc/fstab
-sudo vim /etc/fstab
-
-# essa linha é um exemplo para adição
-UUID=0074352B74352536   /media/hd       ntfs    defaults,uid=1000,gid=1000,noatime       0       2
-
-# atualizar o daemon após a modificação
-sudo systemctl daemon-reload
-
-# montagem do dispositivo
-sudo mount -a
-
 ```
 
 ### Configuração do pyenv, pipx e poetry
@@ -233,7 +167,6 @@ O objetivo do **pipx** é poder instalar pacotes python, como o **poetry** em am
 Instalação do pipx
 
 ```bash
-sudo apt update
 sudo apt install pipx
 sudo pipx ensurepath --global --force
 ```
@@ -242,7 +175,7 @@ sudo pipx ensurepath --global --force
 
 ```bash
 pipx install argcomplete
-echo 'eval "$(register-python-argcomplete pipx)"' >> ~/.bashrc
+echo 'eval "$(register-python-argcomplete pipx)"' | tee -a ~/.zshrc
 ```
 
 #### 3.poetry
