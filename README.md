@@ -4,7 +4,10 @@
 Primeiramente iremos instalar o zsh e trocar para o zsh como default shell
 
 ```bash
-sudo apt install -y zsh
+# instalação do zsh e syntax highlight
+sudo apt install zsh-autosuggestions zsh-syntax-highlighting zsh
+
+# modificação do shell par ao zsh
 chsh -s $(which zsh)
 
 # instalação do oh-my-zsh
