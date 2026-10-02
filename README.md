@@ -1,5 +1,93 @@
 # Dotfiles
 
+### Instalação do Homebrew
+
+Vamos instalar o `Homebrew` pois ele vai gerenciar a instalação de todos as dependências
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+### Instalação e configuração do ZSH, oh-my-zsh
+
+```bash
+# instalação so zsh, autocompletions and auto suggestions
+brew install zsh zsh-completions zsh-autosuggestions
+
+# adicição do zsh entre os shell disponíveis
+echo "/opt/homebrew/bin/zsh" | sudo tee -a /etc/shells
+
+# modificação para o shell
+chsh -s /opt/homebrew/bin/zsh
+
+# instalação do oh-my-zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+# instalação do autossugestion
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+
+# instalação do syntax highlight
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+
+# instalação do autocomplete
+#git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git $ZSH_CUSTOM/plugins/zsh-autocomplete
+
+# instalação do zsh-fast-syntax-highlight
+git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
+
+```
+To adjust the autocompletin on mac, follow the instructions:
+```bash
+# To activate these completions, add the following to your .zshrc:
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+
+  autoload -Uz compinit
+  compinit
+fi
+
+#You may also need to force rebuild `zcompdump`:
+rm -f ~/.zcompdump; compinit
+
+#Additionally, if you receive "zsh compinit: insecure directories" warnings when attempting
+#to load these completions, you may need to run these commands:
+chmod go-w '/opt/homebrew/share'
+chmod -R go-w '/opt/homebrew/share/zsh'
+```
+
+Adicionando as `auto-suggestions` no `.zshrc`.
+```bash
+echo 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh' | tee -a ~/.zshrc
+```
+
+
+
+Aqui se encontram os plugins a serem utilizados. Procure por `plugins` e troque pelas linhas abaixo.
+
+```bash
+plugins=(
+ ansible
+ docker
+ docker-compose
+ dotenv
+ extract
+ git
+ man
+ poetry
+ pyenv
+ python
+ ssh
+ ssh-agent
+ sudo
+ tmux
+ uv
+ vscode
+ zsh-autosuggestions
+ zsh-syntax-highlighting
+ fast-syntax-highlighting
+)
+```
+
 ### Instalação do desktop-file-utils
 Importante para a instalação do alacritty
 
