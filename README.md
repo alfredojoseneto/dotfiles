@@ -47,7 +47,7 @@ git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZS
 
 # adidicona as importações do autocomplete, syntax highlight e fast-syntax-high-light
 echo 'source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh' | tee -a ~/.zshrc
-echo 'source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
+# echo 'source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
 echo 'source $ZSH_CUSTOM/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
 ```
 
@@ -71,7 +71,7 @@ plugins=(
  uv
  vscode
  zsh-autosuggestions
- zsh-syntax-highlighting
+ # zsh-syntax-highlighting
  fast-syntax-highlighting
 )
 ```
@@ -167,7 +167,7 @@ O objetivo do **pipx** é poder instalar pacotes python, como o **poetry** em am
 Instalação do pipx
 
 ```bash
-sudo apt install pipx
+brew install pipx
 sudo pipx ensurepath --global --force
 ```
 
@@ -175,6 +175,7 @@ sudo pipx ensurepath --global --force
 
 ```bash
 pipx install argcomplete
+echo 'autoload -U compinit && compinit' | tee -a ~/.zshrc
 echo 'eval "$(register-python-argcomplete pipx)"' | tee -a ~/.zshrc
 ```
 
