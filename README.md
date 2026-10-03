@@ -96,11 +96,8 @@ echo 'eval "$(starship init zsh)"' | tee -a ~/.zshrc
 
 ```bash
 brew install --cask font-jetbrains-mono-nerd-font
-```
 
-### Configuração do git-adog
 
-<<<<<<< HEAD
 ### Instalação do desktop-file-utils
 Importante para a instalação do alacritty
 
@@ -148,12 +145,6 @@ Seguir a orientação do [link](https://github.com/alacritty/alacritty/blob/mast
 
 ### Instalação do Docker, Neovim, LazyVim e do Dracula Theme
 
-- [Docker][https://docs.docker.com/engine/install/debian/]
-- [Nvim](https://github.com/neovim/neovim)
-- [LazyVim](https://www.lazyvim.org/)
-- [Dracula Theme for LazyVim](https://github.com/Mofiqul/dracula.nvim)
-
-
 ### Instalação dos Dotfiles
 
 
@@ -172,8 +163,6 @@ stow -t ~ alacritty
 ```
 
 ### Configuração do git "adog"
-=======
->>>>>>> mac
 ```bash
 git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
 ```
