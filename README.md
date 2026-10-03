@@ -34,17 +34,14 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
 
 # instalação do syntax highlight
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
-
-# instalação do zsh-fast-syntax-highlight
-git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
+# git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 
 # instalação do zsh-fast-syntax-highlight
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
 
 # adidicona as importações do autocomplete, syntax highlight e fast-syntax-high-light
 echo 'source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh' | tee -a ~/.zshrc
-echo 'source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
+# echo 'source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
 echo 'source $ZSH_CUSTOM/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
 ```
 
@@ -69,7 +66,7 @@ plugins=(
  uv
  vscode
  zsh-autosuggestions
- zsh-syntax-highlighting
+# zsh-syntax-highlighting
  fast-syntax-highlighting
 )
 ```
@@ -95,15 +92,23 @@ echo 'eval "$(starship init zsh)"' | tee -a ~/.zshrc
 ### Instalação do NerdFonts
 
 ```bash
-brew install --cask font-jetbrains-mono-nerd-font
+mkdir -p ~/.local/share/fonts
+wget -O JetBrainsMono.zip  https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip
+unzip JetBrainsMono.zip -d ~/.local/share/fonts/
+rm JetBrainsMono.zip
+fc-cache -fv
+```
 
 
 ### Instalação do desktop-file-utils
-Importante para a instalação do alacritty
+Importante para a instalação do alacritty.
 
 ```bash
 sudo apt install desktop-file-util`
 ```
+
+Em seguida, siga as instruções do **[`GitHub do Alacritty`](https://github.com/alacritty/alacritty/blob/master/INSTALL.md)**.
+
 
 ### Resolução do problema da internet e do bluetooh
 
@@ -254,6 +259,7 @@ sudo pipx ensurepath --global --force
 
 ```bash
 pipx install argcomplete
+echo 'autoload -U compinit && compinit' | tee -a ~/.zshrc
 echo 'eval "$(register-python-argcomplete pipx)"' | tee -a ~/.zshrc
 ```
 
