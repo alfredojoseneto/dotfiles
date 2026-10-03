@@ -197,9 +197,3 @@ nnoremap j gj
 
 " Showing Buffers
 nnoremap <leader>b :ls<CR>:buffer<Space>
-
-" Mapping some characters to edit files
-inoremap <F12> <Esc>20A=<Esc>A
-inoremap <S-F12> <Esc>80A=<Esc>81<Bar>v$hx
-inoremap <C-F12> <Esc>20A-<Esc>A
-inoremap <C-S-F12> <Esc>80A-<Esc>81<Bar>v$hx
