@@ -96,6 +96,10 @@ mkdir -p ~/.local/share/fonts
 wget -O JetBrainsMono.zip  https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/JetBrainsMono.zip
 unzip JetBrainsMono.zip -d ~/.local/share/fonts/
 rm JetBrainsMono.zip
+
+# instalação dos bintários para leitura das fontes
+sudo apt update
+sudo apt install fontconfig
 fc-cache -fv
 ```
 
