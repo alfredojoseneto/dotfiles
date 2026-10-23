@@ -14,7 +14,7 @@ map("n", "N", "Nzz")
 map("n", "Y", "y$")
 
 -- Split the window horizontally (below) and vertically (right)
-map("n", "<C-w>h", "<cmd>split<CR>")
+map("n", "<C-w>s", "<cmd>split<CR>")
 map("n", "<C-w>v", "<cmd>vsplit<CR>")
 
 -- Move between splits with Ctrl+h/j/k/l
