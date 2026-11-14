@@ -1,92 +1,225 @@
-# Dotfiles
+# Dotfiles — macOS
 
-### Instalação do Homebrew
+Roteiro para configurar um mac do zero. Ele foi escrito para ser seguido por uma pessoa ou por um **agent**, na ordem em que aparece.
 
-Vamos instalar o `Homebrew` pois ele vai gerenciar a instalação de todos as dependências
+| Papel | Ferramenta |
+| --- | --- |
+| Gerenciador de pacotes | Homebrew (`brew bundle` + `Brewfile`) |
+| Shell default | zsh + oh-my-zsh |
+| Prompt | Starship |
+| Terminal | Alacritty |
+| Multiplexador | tmux |
+| Editor de texto | Neovim (nvim) |
+| Restauração das configurações | GNU Stow (links simbólicos) |
+
+## Regras para o agent
+
+1. **Siga as etapas na ordem.** Cada etapa termina com um bloco **Verificação**; só avance quando ele passar.
+2. **Todos os comandos são idempotentes.** Podem ser executados de novo sem efeito colateral. Antes de instalar algo, verifique se já existe.
+3. **Nunca sobrescreva nem apague um arquivo existente.** Se um arquivo de destino já existir, faça backup com o sufixo `.bak` e avise o usuário.
+4. **Antes de cada `stow`, rode a simulação** (`stow -n -v`). Nunca use `stow --adopt`.
+5. **Etapas marcadas com [HUMANO]** exigem senha (`sudo`, `chsh`) ou interface gráfica. Não tente executá-las: peça ao usuário e aguarde a confirmação.
+6. **Não instale nada por script baixado da internet** (`curl ... | sh`). A única exceção é o instalador oficial do Homebrew, na etapa 1.
+7. Todos os comandos funcionam em `bash` ou `zsh` e assumem um mac Apple Silicon (Homebrew em `/opt/homebrew`).
+
+## Visão geral
+
+| Componente | Origem | Pacote stow |
+| --- | --- | --- |
+| git, stow, zsh, neovim, tmux, starship, ripgrep, fd, nvm, pyenv, pipx, docker, docker-compose, colima | `Brewfile` (fórmulas) | — |
+| JetBrainsMono Nerd Font, VS Code, DBeaver, Firefox | `Brewfile` (casks) | — |
+| oh-my-zsh, zsh-autosuggestions, fast-syntax-highlighting | `git clone` | — |
+| Alacritty | site oficial (manual) | `alacritty` |
+| poetry, uv, ansible, argcomplete | `pipx` | — |
+| Node.js | `nvm` | — |
+| `.zshrc` | — | `zsh` |
+| Configuração do nvim | — | `nvim` |
+| `.tmux.conf` | — | `tmux` |
+| `starship.toml` | — | `starship` |
+
+O que **não** vem do brew, e por quê:
+
+- **Alacritty**: o cask `alacritty` foi desabilitado pelo Homebrew em 2026-09-01, pois o aplicativo não passa na verificação do Gatekeeper.
+- **oh-my-zsh**: não existe fórmula no Homebrew. É instalado com `git clone` do repositório oficial.
+- **zsh-autosuggestions e fast-syntax-highlighting**: o `.zshrc` carrega os dois pela lista `plugins=(...)`, que exige que estejam em `$ZSH_CUSTOM/plugins`.
+- **Plugins do tmux e do nvim**: são baixados pelos próprios gerenciadores (tpm e lazy.nvim).
+
+---
+
+## 1. Pré-requisitos
+
+### 1.1. Xcode Command Line Tools [HUMANO]
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+xcode-select -p >/dev/null 2>&1 || xcode-select --install
 ```
 
-### Instalação do Stow + Clone dos Dotfiles
+O segundo comando abre uma janela de instalação. Aguarde ela terminar.
 
-O **stow** vai permitir restaurar adequadamente todas as configurações dos **dotfiles**
+### 1.2. Homebrew [HUMANO]
+
+O instalador pede a senha de administrador. Execute apenas se o `brew` ainda não existir.
 
 ```bash
-# instalação do stow
-brew install stow
+command -v brew >/dev/null 2>&1 || [ -x /opt/homebrew/bin/brew ] || \
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# clone dos dotfiles
-mkdir ~/dotfiles
-git clone https://github.com/alfredojoseneto/dotfiles.git ~/dotfiles
+# disponibiliza o brew no shell atual
+eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-### Instalação e configuração do ZSH, oh-my-zsh
+Nos próximos shells não é preciso repetir o `brew shellenv`: o plugin `brew` do oh-my-zsh, listado no `.zshrc`, faz isso.
+
+**Verificação**
 
 ```bash
-# instalação so zsh, autocompletions and auto suggestions
-brew install zsh
+xcode-select -p    # imprime um caminho
+brew --version     # imprime "Homebrew x.y.z"
+```
 
-# adicição do zsh entre os shell disponíveis
-echo "/opt/homebrew/bin/zsh" | sudo tee -a /etc/shells
+## 2. Clone dos dotfiles
 
-# modificação para o shell
+A configuração do mac fica na branch `mac`.
+
+```bash
+export DOTFILES="$HOME/dotfiles"
+[ -d "$DOTFILES/.git" ] || git clone --branch mac https://github.com/alfredojoseneto/dotfiles.git "$DOTFILES"
+```
+
+Se os dotfiles já estiverem clonados em outro diretório, apenas aponte `DOTFILES` para ele. As próximas etapas usam essa variável.
+
+**Verificação**
+
+```bash
+git -C "$DOTFILES" branch --show-current   # mac
+ls "$DOTFILES/Brewfile"
+```
+
+## 3. Instalação dos pacotes (brew bundle)
+
+Todas as fórmulas e casks estão no `Brewfile`. O **stow**, usado na etapa 6, é instalado aqui.
+
+```bash
+brew bundle --file="$DOTFILES/Brewfile"
+```
+
+**Verificação**
+
+```bash
+brew bundle check --file="$DOTFILES/Brewfile" --verbose
+# The Brewfile's dependencies are satisfied.
+```
+
+## 4. zsh como shell default [HUMANO]
+
+Os dois comandos pedem senha.
+
+```bash
+# adição do zsh do Homebrew entre os shells disponíveis
+grep -qx "/opt/homebrew/bin/zsh" /etc/shells || echo "/opt/homebrew/bin/zsh" | sudo tee -a /etc/shells
+
+# modificação do shell default
 chsh -s /opt/homebrew/bin/zsh
-
-# instalação do oh-my-zsh (https://github.com/ohmyzsh/ohmyzsh)
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-# instalação do autossugestion
-git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-# instalação do syntax highlight (opcional, está comentado no .zshrc)
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-# instalação do zsh-fast-syntax-highlight
-git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
 ```
 
-#### Restauração do .zshrc
-
-O **.zshrc** está versionado no pacote `zsh` e já contém toda a configuração: oh-my-zsh, plugins, tmux, nvm, pipx, SDKMAN e Starship. Não é mais necessário adicionar linhas manualmente com `echo ... | tee -a ~/.zshrc`.
-
-O instalador do oh-my-zsh cria um `~/.zshrc` próprio, então é preciso movê-lo antes de usar o stow.
+**Verificação**
 
 ```bash
-# backup do .zshrc criado pelo instalador do oh-my-zsh
-mv ~/.zshrc ~/.zshrc.bak
-
-# restauração do .zshrc dos dotfiles
-cd ~/dotfiles
-stow --target=$HOME zsh
-
-# recarrega o shell
-exec zsh
+dscl . -read "$HOME" UserShell   # UserShell: /opt/homebrew/bin/zsh
 ```
 
-O que o **.zshrc** configura:
+## 5. oh-my-zsh e plugins
 
-- **Tema**: `ZSH_THEME=""`, pois o prompt é do **Starship**, que só é iniciado se estiver instalado.
-- **Plugins**: a lista fica em `plugins=(...)` dentro do arquivo. O `fast-syntax-highlighting` precisa ser sempre o último da lista.
-- **tmux**: o plugin `tmux` cria a sessão `main` ou se conecta a ela ao abrir o terminal (exceto no terminal do VS Code).
-- **nvm**: carregado pelo plugin `nvm` em modo lazy, ou seja, só no primeiro uso de `node`, `npm`, `npx` ou `nvm`.
-- **ssh-agent**: carrega a chave `~/.ssh/id_ed25519` ao iniciar.
-- **compinit**: executado pelo próprio oh-my-zsh, não precisa ser chamado de novo.
-- **`~/.zshrc.local`**: se existir, é carregado no final. Use para ajustes e segredos específicos da máquina, pois ele fica fora do git.
+O [oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) é instalado com `git clone`, sem o script `install.sh`. Assim ele não cria um `~/.zshrc` próprio, que entraria em conflito com o stow.
 
-### Instalação do NerdFonts
+```bash
+# oh-my-zsh
+[ -d "$HOME/.oh-my-zsh" ] || git clone https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
+
+ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+
+# zsh-autosuggestions
+[ -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ] || \
+  git clone https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+
+# fast-syntax-highlighting
+[ -d "$ZSH_CUSTOM/plugins/fast-syntax-highlighting" ] || \
+  git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git "$ZSH_CUSTOM/plugins/fast-syntax-highlighting"
+```
+
+**Verificação**
+
+```bash
+ls "$HOME/.oh-my-zsh/oh-my-zsh.sh"
+ls "$HOME/.oh-my-zsh/custom/plugins"   # deve listar zsh-autosuggestions e fast-syntax-highlighting
+```
+
+## 6. Restauração das configurações (stow)
+
+Cada diretório do repositório é um pacote do stow e espelha o caminho de destino a partir do `$HOME`.
+
+| Pacote | Link criado |
+| --- | --- |
+| `zsh` | `~/.zshrc` |
+| `nvim` | `~/.config/nvim` |
+| `tmux` | `~/.tmux.conf` |
+| `starship` | `~/.config/starship` |
+| `alacritty` | `~/.config/alacritty` |
+
+```bash
+# o ~/.config precisa existir como diretório real;
+# sem isso o stow transformaria o próprio ~/.config em um link para o repositório
+mkdir -p "$HOME/.config"
+
+cd "$DOTFILES"
+
+# 1) simulação: não altera nada e mostra os conflitos
+stow -n -v --target=$HOME zsh nvim tmux starship alacritty
+```
+
+Se a simulação acusar conflito (`cannot stow ... over existing target`), o arquivo de destino já existe e não é um link. Faça o backup dele e simule de novo. Exemplo para o `.zshrc`:
+
+```bash
+mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
+```
+
+Com a simulação limpa, crie os links:
+
+```bash
+# 2) restauração
+stow --target=$HOME zsh
+stow --target=$HOME nvim
+stow --target=$HOME tmux
+stow --target=$HOME starship
+stow --target=$HOME alacritty
+```
+
+**Verificação**
+
+```bash
+ls -l "$HOME/.zshrc" "$HOME/.tmux.conf" "$HOME/.config/nvim" "$HOME/.config/starship" "$HOME/.config/alacritty"
+# todos devem ser links (->) para dentro de $DOTFILES
+
+zsh -n "$HOME/.zshrc" && echo "zshrc ok"
+```
+
+Para carregar a nova configuração, abra um novo terminal ou execute `exec zsh`. O `.zshrc` abre o tmux automaticamente (sessão `main`).
+
+## 7. Instalação do NerdFonts
+
+A fonte **JetBrainsMono Nerd Font** é usada pelo `alacritty.toml` e fornece os ícones do Starship, do tmux e do nvim. Ela já faz parte do `Brewfile`; o comando abaixo é o mesmo passo de forma isolada.
 
 ```bash
 brew install --cask font-jetbrains-mono-nerd-font
 ```
 
-### Configuração do git-adog
+**Verificação**
 
 ```bash
-git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+brew list --cask font-jetbrains-mono-nerd-font >/dev/null && echo "fonte ok"
 ```
 
-### Instalação do Alacritty
+## 8. Instalação do Alacritty [HUMANO]
 
 Seguir a instalação do [site do Alacritty](https://alacritty.org/). Como é open source eles não pagam para registrar no site da apple. Por conta disto, precisa sinalizar para o macOS que é não é um software malicioso e que pode sair da quarentena.
 
@@ -94,256 +227,181 @@ Seguir a instalação do [site do Alacritty](https://alacritty.org/). Como é op
 # adição do alacritty às exceções de quarentena do macOS
 xattr -rd com.apple.quarantine /Applications/Alacritty.app
 
-# restauração dos dotfiles do alacritty
-cd ~/dotfiles
+# restauração dos dotfiles do alacritty (já feito na etapa 6; repetir não tem efeito)
+cd "$DOTFILES"
 stow --target=$HOME alacritty
 ```
 
-### Instalação do tmux
-
-Após instalar o tmux, restaurar os **dotfiles**. Abra o terminal e execute o comando `ctrl + B` depois `Shift + I`. Isso vai ativar o **prefix** e depois instalar as dependências.
-
-A abertura automática do tmux ao iniciar o terminal já está configurada no **.zshrc** (plugin `tmux` do oh-my-zsh, sessão `main`).
+**Verificação**
 
 ```bash
-# instalação do tmux
-brew install tmux
-
-# instalação das configurações do tmux
-cd ~/dotfiles
-stow --target=$HOME tmux
+ls -d /Applications/Alacritty.app
+ls -l "$HOME/.config/alacritty"   # link para $DOTFILES/alacritty/.config/alacritty
 ```
 
-### Instalação do Starship
-O **Starship** é uma customização para o shell para deixar ele mais elegante.
+## 9. tmux
+
+Na primeira vez que o tmux abre, o `.tmux.conf` clona o gerenciador de plugins (tpm) em `~/.tmux/plugins/tpm`. Depois disso, instale os plugins.
+
+Dentro do tmux, execute o comando `ctrl + B` depois `Shift + I`. Isso vai ativar o **prefix** e depois instalar as dependências.
+
+Alternativa sem teclado (para agents), com um servidor tmux em execução:
 
 ```bash
-# instalação
-curl -sS https://starship.rs/install.sh | sh
-
-# adicionando as configurações por meio do stow
-cd ~/dotfiles
-stow --target=$HOME starship
+tmux new-session -d -s setup 2>/dev/null || true
+"$HOME/.tmux/plugins/tpm/bin/install_plugins"
+tmux kill-session -t setup 2>/dev/null || true
 ```
 
-O `STARSHIP_CONFIG` e o `starship init zsh` já estão no **.zshrc**.
-
-
-### Instalação do Dracula Theme para o VIM
+**Verificação**
 
 ```bash
-mkdir -p ~/.vim/pack/themes/start
-cd ~/.vim/pack/themes/start
-git clone https://github.com/dracula/vim.git dracula
+ls "$HOME/.tmux/plugins"   # tpm, tmux-sensible, vim-tmux-navigator, tmux (tema Dracula)
 ```
 
-### Configuração do pyenv, pipx e poetry
+## 10. Neovim
 
-Seguir esta sequência de instalação: pyenv >> pipx >> poetry
-
-#### 1.pyenv
-Seguir a orientação do repositório do github do pyenv [link](https://github.com/pyenv/pyenv).
-O objetivo do **pyenv** é poder gerenciar múltiplas versões do Python sem comprometer a versão do sistema.
-
-#### 2.pipx
-Seguir a orientação da documentação oficial do pipx [link](https://pipx.pypa.io/stable/installation/)
-O objetivo do **pipx** é poder instalar pacotes python, como o **poetry** em ambientes isolados e não impactar nos outros pacotes do sistema.
-
-#### 2.1.pipx configuration
-
-Instalação do pipx
+O `init.lua` clona o lazy.nvim na primeira execução. O comando abaixo instala os plugins nas versões fixadas em `lazy-lock.json`, sem abrir a interface.
 
 ```bash
-brew install pipx
-sudo pipx ensurepath --global --force
+nvim --headless "+Lazy! restore" +qa
 ```
 
-#### 2.1.1.instalação do autocomplete
+**Verificação**
 
 ```bash
-pipx install argcomplete
+ls "$HOME/.local/share/nvim/lazy"
+# dracula.nvim, lazy.nvim, lualine.nvim, plenary.nvim, telescope.nvim
 ```
 
-O autocomplete do pipx (`register-python-argcomplete pipx`) já está no **.zshrc** e é ativado quando o `argcomplete` está instalado.
+## 11. Node.js (nvm)
 
-#### 3.poetry
-Seguir a orientação da documentação oficial do poetry para instalação via pipx [link](https://python-poetry.org/docs/#installing-with-pipx).
-O objetivo do **poetry** é permitir gerenciar projetos python de uma maneira muito mais organizada.
+> A instalação do nvm via Homebrew não é suportada oficialmente pelo projeto nvm. Se houver algum problema, compare com o método de instalação padrão antes de reportar.
 
 ```bash
-pipx install poetry
-source ~/.bashrc
-```
-
-#### 3.1.configuração do poetry
-Após a instalação do **poetry** é importante executar algumas configurações para que ele possa ser utilizado de uma melhor maneira, em especial com o VSCode.
-Além de permitir o code completion para o bash.
-
-```bash
-poetry completions bash >> ~/.bash_completion/poetry
-echo "\n#poetry completions" >> ~/.bashrc
-echo "source ~/.bash_completion/poetry" >> ~/.bashrc
-poetry config --list
-poetry config virtualenvs.in-project true
-poetry config virtualenvs.use-poetry-python true
-```
-
-### Configuração das Fontes com o Lucid Glyph (ClearType)
-Segue as orientações nesse [link](https://github.com/maximilionus/lucidglyph)
-
-
-### Instalação do SDK Man
-Basta seguir as orientaçãoes do repositório [link](https://sdkman.io/install/)
-
-```bash
-curl -s "https://get.sdkman.io" | bash
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install java 25-open
-```
-
-### Instalação do [nvm](https://github.com/nvm-sh/nvm)
-Instalação do nvm para gerenciamento das versões do node.js.
-
-> A instalação via Homebrew não é suportada oficialmente pelo projeto nvm. Se houver algum problema, compare com o método de instalação padrão antes de reportar.
-
-```bash
-# instalação do nvm
-brew install nvm
-
 # diretório de trabalho do nvm (onde ficam as versões do node)
-mkdir -p ~/.nvm
+export NVM_DIR="$HOME/.nvm"
+mkdir -p "$NVM_DIR"
 
-# links esperados pelo nvm e pelo plugin nvm do oh-my-zsh dentro do $NVM_DIR
-ln -s "$(brew --prefix nvm)/libexec/nvm.sh" ~/.nvm/nvm.sh
-ln -s "$(brew --prefix nvm)/libexec/nvm-exec" ~/.nvm/nvm-exec
-
-# recarrega o shell
-exec zsh
+# carrega o nvm no shell atual; na primeira vez, o script do Homebrew
+# também cria os links ~/.nvm/nvm.sh e ~/.nvm/nvm-exec
+. "$(brew --prefix nvm)/nvm.sh"
 
 # instalação da versão LTS do node
 nvm install --lts
 ```
 
-Ao final da instalação, o Homebrew (`brew info nvm`) orienta adicionar as linhas abaixo ao shell profile:
+Não adicione ao `.zshrc` as linhas sugeridas pelo `brew info nvm`. Ele já exporta `NVM_DIR` e `NVM_HOMEBREW`, e o plugin `nvm` do oh-my-zsh carrega o nvm em modo lazy: só no primeiro uso de `nvm`, `node`, `npm` ou `npx`. O plugin depende do link `~/.nvm/nvm.sh` criado acima.
+
+**Verificação**
 
 ```bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+ls -l "$HOME/.nvm/nvm.sh"   # link para /opt/homebrew/opt/nvm/libexec/nvm.sh
+node --version
 ```
 
-**Não é necessário adicioná-las**: o **.zshrc** dos dotfiles já cobre as três, da seguinte forma:
+## 12. Python (pyenv e pipx)
 
-| Linha do Homebrew | Como está no **.zshrc** |
-| --- | --- |
-| `export NVM_DIR="$HOME/.nvm"` | Mesma exportação. Mantém as versões do node fora do diretório do Homebrew, para não serem apagadas em um `brew upgrade nvm`. |
-| `\. "/opt/homebrew/opt/nvm/nvm.sh"` | Feito pelo plugin `nvm` do oh-my-zsh em modo lazy: o `nvm.sh` só é carregado no primeiro uso de `nvm`, `node`, `npm` ou `npx`. |
-| `\. ".../etc/bash_completion.d/nvm"` | Feito pelo plugin `nvm`, que encontra o autocomplete por meio de `NVM_HOMEBREW="/opt/homebrew/opt/nvm"`. |
-
-Adicionar as linhas do Homebrew junto com o plugin carregaria o nvm duas vezes. Se preferir o carregamento imediato (sem lazy), remova a linha `zstyle ':omz:plugins:nvm' lazy yes` do **.zshrc** em vez de adicionar o `source`.
-
-
-### Instalação do DBeaver
+O **pyenv** gerencia múltiplas versões do Python sem comprometer a versão do sistema. O **pipx** instala ferramentas Python em ambientes isolados. Todas as ferramentas Python são instaladas via pipx.
 
 ```bash
-sudo  wget -O /usr/share/keyrings/dbeaver.gpg.key https://dbeaver.io/debs/dbeaver.gpg.key
-echo "deb [signed-by=/usr/share/keyrings/dbeaver.gpg.key] https://dbeaver.io/debs/dbeaver-ce /" | sudo tee /etc/apt/sources.list.d/dbeaver.list
-sudo apt-get update && sudo apt-get install dbeaver-ce
+# instalação de uma versão do Python (ajuste a versão desejada)
+PYTHON_VERSION=3.14
+pyenv install --skip-existing "$PYTHON_VERSION"
+pyenv global "$(pyenv latest "$PYTHON_VERSION")"
+
+# ferramentas Python
+pipx install argcomplete              # autocomplete do pipx no zsh
+pipx install poetry
+pipx install uv
+pipx install --include-deps ansible
+
+# configuração do poetry
+poetry config virtualenvs.in-project true
+poetry config virtualenvs.use-poetry-python true
 ```
 
-### Modernize APT Sources
+O pipx instala os executáveis em `~/.local/bin`, que o `.zshrc` já coloca no `PATH`. Em um shell sem o `.zshrc`, execute `export PATH="$HOME/.local/bin:$PATH"` antes dos comandos `poetry`.
+
+**Verificação**
 
 ```bash
-sudo apt modernize-sources
+pyenv versions
+pipx list --short            # argcomplete, poetry, uv, ansible
+poetry config --list | grep virtualenvs.in-project   # true
 ```
 
-### Ajuste no IBus
+## 13. Docker (Colima)
 
-Esse é um processo para corrigir os avisos constantes do IBus [link](https://discuss.kde.org/t/ibus-issue-with-wayland/3680/14)
+O **Colima** é o runtime de containers, no lugar do Docker Desktop. As fórmulas `docker`, `docker-compose` e `colima` já foram instaladas pelo `Brewfile`.
 
 ```bash
-sudo apt install -y zenity
-im-config
+colima status >/dev/null 2>&1 || colima start
 ```
-Depois do "im-config", seguir a seguinte ordem: OK -> YES > do not activate any IM from im-config and use desktop default -> OK -> reboot
-As variávies de ambiente não serão mais "setadas" e com isso os warnings não serão mais apresentados.
 
-### Configuração do PS1 Bash
-Utilizar o PS1.text, mas há esses três links com informações complementares, caso deseje mudar algo
-[link-1](https://unix.stackexchange.com/questions/124407/what-color-codes-can-i-use-in-my-bash-ps1-prompt)
-[link-2](https://wiki.archlinux.org/title/Bash/Prompt_customization)
-[link-3](https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
+Para o subcomando `docker compose` (com espaço) funcionar, o Docker precisa saber onde o Homebrew instala os plugins. Adicione a chave abaixo ao `~/.docker/config.json`, **mesclando** com o conteúdo existente, sem substituir o arquivo:
 
-```text
-# =============================================================================
-# -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
-# =============================================================================
-if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
-  # Adapted from https://unix.stackexchange.com/a/176885/347104
-  # Create session 'main' or attach to 'main' if already exists.
-  tmux new-session -A -s main
-fi
-
-
-#==============================================================================
-#-------------------- PS1 BASH ------------------------------------------------
-#==============================================================================
-
-# Colors
-FMT_BOLD="\[\e[1m\]"
-FMT_DIM="\[\e[2m\]"
-FMT_RESET="\[\e[0m\]"
-FMT_UNBOLD="\[\e[22m\]"
-FMT_UNDIM="\[\e[22m\]"
-FG_BLACK="\[\e[30m\]"
-FG_BLUE="\[\e[34m\]"
-FG_CYAN="\[\e[36m\]"
-FG_LIGHT_CYAN="\[\e[96m\]"
-FG_GREEN="\[\e[32m\]"
-FG_LIGHT_GREEN="\[\e[92m\]"
-FG_GREY="\[\e[37m\]"
-FG_MAGENTA="\[\e[35m\]"
-FG_RED="\[\e[31m\]"
-FG_YELLOW="\[\e[33m\]"
-FG_LIGHT_YELLOW="\[\e[93m\]"
-FG_WHITE="\[\e[97m\]"
-FG_PURPLE="\[\033[1;35m\]"
-BG_BLACK="\[\e[40m\]"
-BG_BLUE="\[\e[44m\]"
-BG_CYAN="\[\e[46m\]"
-BG_GREEN="\[\e[42m\]"
-BG_MAGENTA="\[\e[45m\]"
-BG_RED="\[\e[41m\]"
-STARTLINE="\342\224\214\342\224\200"
-ENDLINE="\342\224\224\342\224\200\342\224\200\342\225\274"
-
-parse_git_bg() {
-	[[ $(git status -s 2> /dev/null) ]] && echo -e "\e[43m" || echo -e "\e[42m"
+```json
+{
+  "cliPluginsExtraDirs": ["/opt/homebrew/lib/docker/cli-plugins"]
 }
-
-parse_git_fg() {
-	[[ $(git status -s 2> /dev/null) ]] && echo -e "\e[93m" || echo -e "\e[92m"
-}
-
-# Python Version
-python_version(){
-    if [[ -n $(python3 --version)  ]]
-    then
-        python3 --version | awk '{print $2 }'
-    fi
-}
-
-PS1=""
-PS1="\n${FG_CYAN}$STARTLINE${FMT_RESET}" # begin arrow to prompt
-PS1+="[${FMT_BOLD}${FG_YELLOW} \$(python_version)${FMT_RESET}-${FMT_BOLD}${FG_GREEN}\u${FMT_RESET}${FMT_BOLD}${FG_WHITE}@${FMT_RESET}${FMT_BOLD}${FG_PURPLE}\h${FMT_RESET}]-[${FMT_BOLD}${FG_CYAN}\W${FMT_RESET}]"
-PS1+="${FMT_RESET}"
-PS1+="\$(git branch 2> /dev/null | grep '^*' | colrm 1 2 | xargs -I BRANCH echo -n \"" # check if git branch exists
-PS1+="-[${FMT_BOLD}\$(parse_git_fg) BRANCH${FMT_RESET}]" # print current git branch
-PS1+="${FMT_RESET}\$(parse_git_fg)\")${FMT_RESET}\n" # end last container (either FILES or BRANCH)
-PS1+="${FG_CYAN}$ENDLINE " # end arrow to prompt
-PS1+="${FG_CYAN}\\$ " # print prompt
-PS1+="${FMT_RESET}"
-export PS1
-
-#==============================================================================
 ```
+
+**Verificação**
+
+```bash
+docker run --rm hello-world
+docker compose version
+```
+
+## 14. Configuração do git-adog
+
+```bash
+git config --global alias.adog "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+```
+
+**Verificação**
+
+```bash
+git config --global --get alias.adog   # imprime o alias
+```
+
+## 15. Verificação final
+
+```bash
+brew bundle check --file="$DOTFILES/Brewfile"          # dependencies are satisfied
+dscl . -read "$HOME" UserShell                         # /opt/homebrew/bin/zsh
+ls -l "$HOME/.zshrc" "$HOME/.tmux.conf" \
+      "$HOME/.config/nvim" "$HOME/.config/starship" \
+      "$HOME/.config/alacritty"                        # todos são links para $DOTFILES
+zsh -n "$HOME/.zshrc" && echo "zshrc ok"
+starship --version
+tmux -V
+nvim --version | head -1
+ls "$HOME/.tmux/plugins" "$HOME/.local/share/nvim/lazy"
+pipx list --short
+docker version --format '{{.Server.Version}}'
+```
+
+O teste definitivo é do usuário: abrir o Alacritty e conferir se o tmux inicia na sessão `main`, se o prompt do Starship aparece com os ícones e se o nvim abre com o tema Dracula.
+
+---
+
+## O que o .zshrc configura
+
+O `.zshrc` do pacote `zsh` já contém toda a configuração do shell. Não adicione linhas a ele com `echo ... | tee -a ~/.zshrc`.
+
+- **Tema**: `ZSH_THEME=""`, pois o prompt é do **Starship**, iniciado no fim do arquivo.
+- **Plugins**: a lista fica em `plugins=(...)`. O `fast-syntax-highlighting` precisa ser sempre o último.
+- **Homebrew**: o plugin `brew` executa o `brew shellenv`, que coloca `/opt/homebrew/bin` no `PATH`.
+- **tmux**: o plugin `tmux` cria a sessão `main` ou se conecta a ela ao abrir o terminal (exceto no terminal do VS Code).
+- **nvm**: `NVM_DIR` e `NVM_HOMEBREW` exportados; carregamento lazy pelo plugin `nvm`.
+- **ssh-agent**: carrega a chave `~/.ssh/id_ed25519` ao iniciar.
+- **pipx**: autocomplete ativado quando o `argcomplete` está instalado.
+- **compinit**: executado pelo próprio oh-my-zsh, não precisa ser chamado de novo.
+- **`~/.zshrc.local`**: se existir, é carregado no final. Use para ajustes e segredos específicos da máquina, pois ele fica fora do git.
+
+## Outros arquivos do repositório
+
+- `vim/.vimrc`: configuração antiga do vim, mantida como referência. Não faz parte deste roteiro.
+- `dockerfiles/` e `vagrant/`: ambientes de desenvolvimento auxiliares, sem relação com a configuração do mac.
