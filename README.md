@@ -204,6 +204,44 @@ sdk install java 25-open
 ### Instalação do [nvm](https://github.com/nvm-sh/nvm)
 Instalação do nvm para gerenciamento das versões do node.js.
 
+> A instalação via Homebrew não é suportada oficialmente pelo projeto nvm. Se houver algum problema, compare com o método de instalação padrão antes de reportar.
+
+```bash
+# instalação do nvm
+brew install nvm
+
+# diretório de trabalho do nvm (onde ficam as versões do node)
+mkdir -p ~/.nvm
+
+# links esperados pelo nvm e pelo plugin nvm do oh-my-zsh dentro do $NVM_DIR
+ln -s "$(brew --prefix nvm)/libexec/nvm.sh" ~/.nvm/nvm.sh
+ln -s "$(brew --prefix nvm)/libexec/nvm-exec" ~/.nvm/nvm-exec
+
+# recarrega o shell
+exec zsh
+
+# instalação da versão LTS do node
+nvm install --lts
+```
+
+Ao final da instalação, o Homebrew (`brew info nvm`) orienta adicionar as linhas abaixo ao shell profile:
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+```
+
+**Não é necessário adicioná-las**: o **.zshrc** dos dotfiles já cobre as três, da seguinte forma:
+
+| Linha do Homebrew | Como está no **.zshrc** |
+| --- | --- |
+| `export NVM_DIR="$HOME/.nvm"` | Mesma exportação. Mantém as versões do node fora do diretório do Homebrew, para não serem apagadas em um `brew upgrade nvm`. |
+| `\. "/opt/homebrew/opt/nvm/nvm.sh"` | Feito pelo plugin `nvm` do oh-my-zsh em modo lazy: o `nvm.sh` só é carregado no primeiro uso de `nvm`, `node`, `npm` ou `npx`. |
+| `\. ".../etc/bash_completion.d/nvm"` | Feito pelo plugin `nvm`, que encontra o autocomplete por meio de `NVM_HOMEBREW="/opt/homebrew/opt/nvm"`. |
+
+Adicionar as linhas do Homebrew junto com o plugin carregaria o nvm duas vezes. Se preferir o carregamento imediato (sem lazy), remova a linha `zstyle ':omz:plugins:nvm' lazy yes` do **.zshrc** em vez de adicionar o `source`.
+
 
 ### Instalação do DBeaver
 

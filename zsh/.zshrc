@@ -9,7 +9,11 @@ export EDITOR="nvim"
 export VISUAL="$EDITOR"
 [[ -z "$LANG" ]] && export LANG="en_US.UTF-8"
 
+# nvm installed via Homebrew (see README):
+#   NVM_DIR     -> where node versions live (outside the Cellar, survives upgrades)
+#   NVM_HOMEBREW -> where the nvm plugin finds the completion shipped by brew
 export NVM_DIR="$HOME/.nvm"
+export NVM_HOMEBREW="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/nvm"
 
 # =============================================================================
 # -------------------- OH-MY-ZSH ----------------------------------------------
