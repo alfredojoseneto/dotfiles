@@ -291,13 +291,26 @@ mkdir -p "$NVM_DIR"
 nvm install --lts
 ```
 
-Não adicione ao `.zshrc` as linhas sugeridas pelo `brew info nvm`. Ele já exporta `NVM_DIR` e `NVM_HOMEBREW`, e o plugin `nvm` do oh-my-zsh carrega o nvm em modo lazy: só no primeiro uso de `nvm`, `node`, `npm` ou `npx`. O plugin depende do link `~/.nvm/nvm.sh` criado acima.
+Ao final da instalação, o Homebrew (`brew info nvm`) orienta criar o diretório `~/.nvm` e adicionar as linhas abaixo ao shell profile:
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+```
+
+**Não é preciso adicioná-las**: o `.zshrc` dos dotfiles já contém essas três linhas na seção `NVM`, com o caminho `/opt/homebrew/opt/nvm` guardado na variável `NVM_HOMEBREW`. Com isso, o `nvm`, o `node` e o code completion (`nvm <TAB>`) ficam disponíveis assim que o terminal abre.
+
+A seção `NVM` fica depois do `source $ZSH/oh-my-zsh.sh`, pois o script de completion precisa que o `compinit` já tenha sido executado. O plugin `nvm` do oh-my-zsh **não** é usado: junto com essas linhas ele carregaria o nvm duas vezes.
 
 **Verificação**
 
 ```bash
 ls -l "$HOME/.nvm/nvm.sh"   # link para /opt/homebrew/opt/nvm/libexec/nvm.sh
 node --version
+
+# code completion registrado (executar em um novo terminal, com o .zshrc carregado)
+echo "${_comps[nvm]}"       # _bash_complete -o default -F __nvm
 ```
 
 ## 12. Python (pyenv e pipx)
@@ -395,7 +408,7 @@ O `.zshrc` do pacote `zsh` já contém toda a configuração do shell. Não adic
 - **Plugins**: a lista fica em `plugins=(...)`. O `fast-syntax-highlighting` precisa ser sempre o último.
 - **Homebrew**: o plugin `brew` executa o `brew shellenv`, que coloca `/opt/homebrew/bin` no `PATH`.
 - **tmux**: o plugin `tmux` cria a sessão `main` ou se conecta a ela ao abrir o terminal (exceto no terminal do VS Code).
-- **nvm**: `NVM_DIR` e `NVM_HOMEBREW` exportados; carregamento lazy pelo plugin `nvm`.
+- **nvm**: exporta `NVM_DIR` e carrega o `nvm.sh` e o code completion do Homebrew, conforme o `brew info nvm`.
 - **ssh-agent**: carrega a chave `~/.ssh/id_ed25519` ao iniciar.
 - **pipx**: autocomplete ativado quando o `argcomplete` está instalado.
 - **compinit**: executado pelo próprio oh-my-zsh, não precisa ser chamado de novo.

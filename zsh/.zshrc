@@ -9,12 +9,6 @@ export EDITOR="nvim"
 export VISUAL="$EDITOR"
 [[ -z "$LANG" ]] && export LANG="en_US.UTF-8"
 
-# nvm installed via Homebrew (see README):
-#   NVM_DIR     -> where node versions live (outside the Cellar, survives upgrades)
-#   NVM_HOMEBREW -> where the nvm plugin finds the completion shipped by brew
-export NVM_DIR="$HOME/.nvm"
-export NVM_HOMEBREW="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/nvm"
-
 # =============================================================================
 # -------------------- OH-MY-ZSH ----------------------------------------------
 # =============================================================================
@@ -25,9 +19,6 @@ ZSH_THEME=""
 
 # Just remind me to update when it's time
 zstyle ':omz:update' mode reminder
-
-# nvm: load only on the first use of node/npm/npx/nvm (faster startup)
-zstyle ':omz:plugins:nvm' lazy yes
 
 # ssh-agent: identities loaded when the agent starts
 zstyle ':omz:plugins:ssh-agent' identities id_ed25519
@@ -51,7 +42,6 @@ plugins=(
   extract
   git
   man
-  nvm
   poetry
   pyenv
   python
@@ -68,6 +58,17 @@ plugins=(
 
 # oh-my-zsh already runs compinit, no need to call it again
 source "$ZSH/oh-my-zsh.sh"
+
+# =============================================================================
+# -------------------- NVM ----------------------------------------------------
+# =============================================================================
+# nvm installed via Homebrew, loaded as instructed by `brew info nvm`.
+# NVM_DIR lives outside the Cellar so node versions survive `brew upgrade nvm`.
+# Must come after oh-my-zsh: the completion script needs compinit already run.
+export NVM_DIR="$HOME/.nvm"
+NVM_HOMEBREW="${HOMEBREW_PREFIX:-/opt/homebrew}/opt/nvm"
+[ -s "$NVM_HOMEBREW/nvm.sh" ] && \. "$NVM_HOMEBREW/nvm.sh"  # This loads nvm
+[ -s "$NVM_HOMEBREW/etc/bash_completion.d/nvm" ] && \. "$NVM_HOMEBREW/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # =============================================================================
 # -------------------- COMPLETIONS --------------------------------------------
