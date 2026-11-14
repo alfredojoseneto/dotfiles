@@ -33,48 +33,46 @@ echo "/opt/homebrew/bin/zsh" | sudo tee -a /etc/shells
 # modificação para o shell
 chsh -s /opt/homebrew/bin/zsh
 
-# instalação do oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# instalação do oh-my-zsh (https://github.com/ohmyzsh/ohmyzsh)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # instalação do autossugestion
-git clone https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_CUSTOM/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-# instalação do syntax highlight
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+# instalação do syntax highlight (opcional, está comentado no .zshrc)
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 # instalação do zsh-fast-syntax-highlight
 git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
-
-# adidicona as importações do autocomplete, syntax highlight e fast-syntax-high-light
-echo 'source $ZSH_CUSTOM/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh' | tee -a ~/.zshrc
-# echo 'source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
-echo 'source $ZSH_CUSTOM/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh' | tee -a ~/.zshrc
 ```
 
-Aqui se encontram os plugins a serem utilizados. Procure por `plugins` e troque pelas linhas abaixo.
+#### Restauração do .zshrc
+
+O **.zshrc** está versionado no pacote `zsh` e já contém toda a configuração: oh-my-zsh, plugins, tmux, nvm, pipx, SDKMAN e Starship. Não é mais necessário adicionar linhas manualmente com `echo ... | tee -a ~/.zshrc`.
+
+O instalador do oh-my-zsh cria um `~/.zshrc` próprio, então é preciso movê-lo antes de usar o stow.
+
 ```bash
-plugins=(
- ansible
- docker
- docker-compose
- dotenv
- extract
- git
- man
- poetry
- pyenv
- python
- ssh
- ssh-agent
- sudo
- tmux
- uv
- vscode
- zsh-autosuggestions
- # zsh-syntax-highlighting
- fast-syntax-highlighting
-)
+# backup do .zshrc criado pelo instalador do oh-my-zsh
+mv ~/.zshrc ~/.zshrc.bak
+
+# restauração do .zshrc dos dotfiles
+cd ~/dotfiles
+stow --target=$HOME zsh
+
+# recarrega o shell
+exec zsh
 ```
+
+O que o **.zshrc** configura:
+
+- **Tema**: `ZSH_THEME=""`, pois o prompt é do **Starship**, que só é iniciado se estiver instalado.
+- **Plugins**: a lista fica em `plugins=(...)` dentro do arquivo. O `fast-syntax-highlighting` precisa ser sempre o último da lista.
+- **tmux**: o plugin `tmux` cria a sessão `main` ou se conecta a ela ao abrir o terminal (exceto no terminal do VS Code).
+- **nvm**: carregado pelo plugin `nvm` em modo lazy, ou seja, só no primeiro uso de `node`, `npm`, `npx` ou `nvm`.
+- **ssh-agent**: carrega a chave `~/.ssh/id_ed25519` ao iniciar.
+- **compinit**: executado pelo próprio oh-my-zsh, não precisa ser chamado de novo.
+- **`~/.zshrc.local`**: se existir, é carregado no final. Use para ajustes e segredos específicos da máquina, pois ele fica fora do git.
 
 ### Instalação do NerdFonts
 
@@ -103,7 +101,9 @@ stow --target=$HOME alacritty
 
 ### Instalação do tmux
 
-Após instalar o tmux, restaurar os **dotfiles** e inserir as instruções no arquivo **.zshrc**. Abra o terminal e execute o comando `ctrl + B` depois `Shift + I`. Isso vai ativar o **prefix** e depois instalar as dependências.
+Após instalar o tmux, restaurar os **dotfiles**. Abra o terminal e execute o comando `ctrl + B` depois `Shift + I`. Isso vai ativar o **prefix** e depois instalar as dependências.
+
+A abertura automática do tmux ao iniciar o terminal já está configurada no **.zshrc** (plugin `tmux` do oh-my-zsh, sessão `main`).
 
 ```bash
 # instalação do tmux
@@ -112,17 +112,6 @@ brew install tmux
 # instalação das configurações do tmux
 cd ~/dotfiles
 stow --target=$HOME tmux
-
-echo '
-# =============================================================================
-# -------------------- STARTING TMUX WHEN OPEN TERMINAL -----------------------
-# =============================================================================
-if [ -n "$PS1" ] && [ -z "$TMUX" ]; then
-  # Adapted from https://unix.stackexchange.com/a/176885/347104
-  # Create session 'main' or attach to 'main' if already exists.
-  tmux new-session -A -s main
-fi
-' | tee -a ~/.zshrc
 ```
 
 ### Instalação do Starship
@@ -135,11 +124,9 @@ curl -sS https://starship.rs/install.sh | sh
 # adicionando as configurações por meio do stow
 cd ~/dotfiles
 stow --target=$HOME starship
-
-# adicionando as configurações
-echo 'export STARSHIP_CONFIG=~/.config/starship/starship.toml' | tee -a ~/.zshrc
-echo 'eval "$(starship init zsh)"' | tee -a ~/.zshrc
 ```
+
+O `STARSHIP_CONFIG` e o `starship init zsh` já estão no **.zshrc**.
 
 
 ### Instalação do Dracula Theme para o VIM
@@ -175,9 +162,9 @@ sudo pipx ensurepath --global --force
 
 ```bash
 pipx install argcomplete
-echo 'autoload -U compinit && compinit' | tee -a ~/.zshrc
-echo 'eval "$(register-python-argcomplete pipx)"' | tee -a ~/.zshrc
 ```
+
+O autocomplete do pipx (`register-python-argcomplete pipx`) já está no **.zshrc** e é ativado quando o `argcomplete` está instalado.
 
 #### 3.poetry
 Seguir a orientação da documentação oficial do poetry para instalação via pipx [link](https://python-poetry.org/docs/#installing-with-pipx).
