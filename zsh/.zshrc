@@ -56,6 +56,9 @@ plugins=(
   fast-syntax-highlighting   # must be the last plugin
 )
 
+# Show date and time of each command in `history` (must be set before oh-my-zsh loads)
+HIST_STAMPS="%Y-%m-%d %H:%M:%S"
+
 # oh-my-zsh already runs compinit, no need to call it again
 source "$ZSH/oh-my-zsh.sh"
 
