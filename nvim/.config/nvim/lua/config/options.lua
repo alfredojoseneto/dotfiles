@@ -5,8 +5,9 @@ opt.number = true
 opt.relativenumber = true
 opt.cursorline = true
 
--- Do not wrap lines. Allow long lines to extend as far as the line goes.
-opt.wrap = false
+-- Wrap long lines at the window edge, breaking at word boundaries
+opt.wrap = true
+opt.linebreak = true
 
 -- Keep some lines around the cursor when scrolling
 opt.scrolloff = 10
